@@ -7,34 +7,53 @@ template <typename U>
 using RequireSpecialType = typename std::enable_if<std::is_same<U, AVPacket*>::value ||
 	std::is_same<U, AVFrame*>::value>::type;
 
-template <typename T,RequireSpecialType<T>* = nullptr>
+template <typename T>
 class SharedAVStruct
 {
 	
 public:
-	template <>
-	SharedAVStruct()
-	{
-		data = av_packet_alloc();
-	}
+	template <typename U = T, RequireSpecialType<U>* = nullptr>
+	SharedAVStruct() {}
+};
 
-	template<>
+template <>
+class SharedAVStruct<AVFrame*>
+{
+
+public:
 	SharedAVStruct()
 	{
 		data = av_frame_alloc();
 	}
 
-	template<>
+	~SharedAVStruct()
+	{
+		av_frame_free(&data);
+	}
+
+	AVFrame* getPointer()
+	{
+		return data;
+	}
+private:
+	AVFrame* data;
+};
+
+template <>
+class SharedAVStruct<AVPacket*>
+{
+
+public:
+	SharedAVStruct()
+	{
+		data = av_packet_alloc();
+	}
+
 	~SharedAVStruct()
 	{
 		av_packet_free(&data);
 	}
 
-	template<>
-	~SharedAVStruct()
-	{
-		av_frame_free(&data);
-	}
 private:
-	T data;
+	AVPacket* data;
 };
