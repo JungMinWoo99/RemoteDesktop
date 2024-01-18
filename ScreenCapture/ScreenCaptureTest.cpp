@@ -1,25 +1,7 @@
-#include "ScreenCapture.hpp"
+#include "ScreenCapture/ScreenCapture.h"
+#include "Constant/VideoConstants.h"
+#include <thread>
 
-/*
-LRESULT CALLBACK WndProc(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam) {
-	switch (msg) {
-	case WM_PAINT: {
-		PAINTSTRUCT ps;
-		HDC hdc = BeginPaint(hwnd, &ps);
-
-		// 여기에 윈도우의 내용을 그리는 코드를 추가합니다.
-
-		EndPaint(hwnd, &ps);
-		return 0;
-	}
-	case WM_DESTROY:
-		PostQuitMessage(0);
-		return 0;
-	}
-	return DefWindowProc(hwnd, msg, wParam, lParam);
-}
-
-*/
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
@@ -35,7 +17,11 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 
 int main(void)
 {
-	// 윈도우 클래스 등록
+	int w, h, frame_per_sec;
+	w = DEFALUT_WIDTH;
+	h = DEFALUT_HEIGHT;
+	frame_per_sec = DEFALUT_FRAME_RATE;
+
 	WNDCLASSEX wc = {};
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -47,14 +33,19 @@ int main(void)
 	RegisterClassEx(&wc);
 
 	HWND _main = CreateWindowEx(0, L"MyWindowClass", L"My Window", WS_OVERLAPPEDWINDOW,
-		CW_USEDEFAULT, CW_USEDEFAULT, 1920, 1080, NULL, NULL, GetModuleHandle(NULL), NULL);
+		CW_USEDEFAULT, CW_USEDEFAULT, w, h, NULL, NULL, GetModuleHandle(NULL), NULL);
+
 	HDC mainDC = GetDC(_main);
 	ShowWindow(_main, SW_SHOWNORMAL);
-	ScreenCapture capture_obj(1920, 1080);
+	ScreenCapture capture_obj(w, h);
 
-	capture_obj.CaptureCurrentScreen();
-	SetDIBitsToDevice(mainDC, 0, 0, 1920, 1080, 0, 0, 0, 1080, capture_obj.getBuf(), &capture_obj.getBMI(), DIB_RGB_COLORS);
-	UpdateWindow(_main);
-	while (true);
+	while (true)
+	{
+		//std::this_thread::sleep_for(std::chrono::microseconds(1000000 / frame_per_sec));
+		auto buf = capture_obj.CaptureCurrentScreen();
+		SetDIBitsToDevice(mainDC, 0, 0, w, h, 0, 0, 0, h, buf.get()->getMemPointer(), &capture_obj.getBMI(), DIB_RGB_COLORS);
+		UpdateWindow(_main);
+	}
+
 	return 0;
 }

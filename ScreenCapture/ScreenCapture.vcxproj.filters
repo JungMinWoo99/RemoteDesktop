@@ -18,14 +18,37 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ScreenCapture.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="ScreenCapture.hpp">
-      <Filter>헤더 파일</Filter>
-    </ClCompile>
     <ClCompile Include="ScreenCaptureTest.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
+    <ClCompile Include="ScreenDataBufferTest.cpp">
+      <Filter>TestCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ScreenCapture\FrameData.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ScreenCapture\ScreenCapture.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ScreenCapture\ScreenDataBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ScreenCapture\ScreenDataPriorityQueue.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\header\ScreenCapture\FrameData.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\ScreenCapture\ScreenCapture.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\ScreenCapture\ScreenDataBuffer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\ScreenCapture\ScreenDataPriorityQueue.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

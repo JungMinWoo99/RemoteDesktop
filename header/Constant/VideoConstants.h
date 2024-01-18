@@ -1,0 +1,16 @@
+#pragma once
+
+#define DEFALUT_WIDTH 1920
+#define DEFALUT_HEIGHT 1080
+
+#define DEFALUT_FRAME_RATE 60
+
+#define FRAME_TIME_OUT 0.02 
+
+#define SEC_PER_CAP_FRAME 10 
+
+#define SEC_PER_PRC_FRAME 3 
+
+#define TIME_STEP_DIVISION 5 
+
+#define BYTE_PER_PIXEL 4
