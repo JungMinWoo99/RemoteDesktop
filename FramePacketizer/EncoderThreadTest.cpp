@@ -50,8 +50,9 @@ public:
 		avformat_free_context(*formatContext);
 	}
 
-	void PacketProcess(AVPacket* packet) override
+	void PacketProcess(SharedAVPacket input) override
 	{
+		auto packet = input.get()->getPointer();
 		packet->stream_index = (*outStream)->index;
 		if (av_interleaved_write_frame(*formatContext, packet) < 0)
 			cout << "av_interleaved_write_frame fail" << endl;
@@ -96,10 +97,6 @@ int main(void)
 	PixFmtConverter pix_fmt_cvt;
 	shared_ptr<FrameData> next_frame;
 	shared_ptr<FrameData> prev_frame = nullptr;
-	AVFrame* av_frame;
-	CreateAVFrame(av_frame, encoding_obj.getEncCodecContext());
-	AVPacket* recv_packet;
-
 	
 	capture_obj.StartCapture();
 	clt_obj.StartCollect();
@@ -114,8 +111,11 @@ int main(void)
 		if (next_frame == prev_frame)
 			cout << "duplicated frame input: " << i << " remain frame: " << periodic_buf.Size() << endl;
 		prev_frame = next_frame;
+
+		SharedAVFrame av_frame = make_shared<SharedAVStruct<AVFrame*>>();
+		CreateAVFrame(av_frame.get()->getPointer(), encoding_obj.getEncCodecContext());
 		auto yuv_frame = pix_fmt_cvt.ConvertBGRToYUV(next_frame);
-		CopyRawToAVFrame(yuv_frame, av_frame);
+		CopyRawToAVFrame(yuv_frame, av_frame.get()->getPointer());
 		enc_thr.InputFrame(av_frame);
 	}
 	cout << "capture done" << endl;
@@ -124,12 +124,13 @@ int main(void)
 	clt_obj.EndCollect();
 	capture_obj.EndCapture();	
 	
+	SharedAVPacket recv_packet;
 	while (encoding_obj.SendPacket(recv_packet))
 	{
-		recv_packet->stream_index = outStream->index;
-		if (av_interleaved_write_frame(formatContext, recv_packet) < 0)
+		auto packet = recv_packet.get()->getPointer();
+		packet->stream_index = outStream->index;
+		if (av_interleaved_write_frame(formatContext, packet) < 0)
 			cout << "av_interleaved_write_frame fail" << endl;
-		av_packet_free(&recv_packet);
 	}
 	av_write_trailer(formatContext);
 	cout << "end encoding" << endl;

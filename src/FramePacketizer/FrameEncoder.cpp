@@ -88,11 +88,12 @@ FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 	}
 }
 
-_Check_return_ bool FrameEncoder::EncodeFrame(AVFrame* yuv_frame_data)
+_Check_return_ bool FrameEncoder::EncodeFrame(SharedAVFrame frame_data)
 {
 	lock_guard<std::mutex> lock(encoder_mtx);
 	static int64_t prev_capture_time = 0;
 	static int pts_count = 0;
+	auto yuv_frame_data = frame_data.get()->getPointer();
 
 	if (yuv_frame_data->pts < prev_capture_time)
 		return false;
@@ -141,7 +142,7 @@ _Check_return_ bool FrameEncoder::EncodeFrame(AVFrame* yuv_frame_data)
 	return is_success;
 }
 
-_Check_return_ bool FrameEncoder::SendPacket(AVPacket*& packet)
+_Check_return_ bool FrameEncoder::SendPacket(SharedAVPacket& packet)
 {
 	lock_guard<std::mutex> lock(encoder_mtx);
 	bool is_success = true;
@@ -177,21 +178,21 @@ FrameEncoder::~FrameEncoder()
 void FrameEncoder::FlushContext()
 {
 	avcodec_send_frame(enc_context, NULL);
-	int ret;
+	int error_code;
 	while (true)
 	{
-		AVPacket* packet = av_packet_alloc();
-		ret = avcodec_receive_packet(enc_context, packet);
-		if (ret != 0)
+		SharedAVPacket packet = make_shared<SharedAVStruct<AVPacket*>>();
+		error_code = avcodec_receive_packet(enc_context, packet.get()->getPointer());
+		if (error_code != 0)
 		{
-			if (ret == AVERROR_EOF)
+			if (error_code == AVERROR_EOF)
 				break;
 			else
 			{
 				char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
-				av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, ret);
+				av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, error_code);
 				cout << "avcodec_receive_packet() fail: " << errorStr << endl;
-				exit(ret);
+				exit(error_code);
 			}
 		}
 		enced_packet_buf.push(packet);
@@ -201,18 +202,12 @@ void FrameEncoder::FlushContext()
 _Check_return_ bool FrameEncoder::FillPacketBuf()
 {
 	bool ret = true;
-	AVPacket* packet = av_packet_alloc();
-	if (packet == NULL)
-	{
-		cout << "av_packet_alloc fail" << endl;
-		exit(-1);
-	}
+	SharedAVPacket packet = make_shared<SharedAVStruct<AVPacket*>>();
 
-	int error_code = avcodec_receive_packet(enc_context, packet);
+	int error_code = avcodec_receive_packet(enc_context, packet.get()->getPointer());
 	if (error_code != 0)
 	{
 		ret = false;
-		av_packet_free(&packet);
 
 		if (error_code == AVERROR(EAGAIN))
 		{

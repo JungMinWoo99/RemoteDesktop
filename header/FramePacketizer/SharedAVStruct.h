@@ -2,6 +2,7 @@ extern "C" {
 #include <libavcodec/packet.h>
 #include <libavutil/frame.h>
 }
+#include <iostream>
 
 template <typename U>
 using RequireSpecialType = typename std::enable_if<std::is_same<U, AVPacket*>::value ||
@@ -16,6 +17,9 @@ public:
 	SharedAVStruct() {}
 };
 
+using SharedAVPacket = std::shared_ptr<SharedAVStruct<AVPacket*>>;
+using SharedAVFrame = std::shared_ptr<SharedAVStruct<AVFrame*>>;
+
 template <>
 class SharedAVStruct<AVFrame*>
 {
@@ -24,6 +28,11 @@ public:
 	SharedAVStruct()
 	{
 		data = av_frame_alloc();
+		if (data == NULL)
+		{
+			std::cout << "av_frame_alloc fail" << std::endl;
+			exit(-1);
+		}
 	}
 
 	~SharedAVStruct()
@@ -31,7 +40,7 @@ public:
 		av_frame_free(&data);
 	}
 
-	AVFrame* getPointer()
+	AVFrame*& getPointer()
 	{
 		return data;
 	}
@@ -47,6 +56,11 @@ public:
 	SharedAVStruct()
 	{
 		data = av_packet_alloc();
+		if (data == NULL)
+		{
+			std::cout << "av_packet_alloc fail" << std::endl;
+			exit(-1);
+		}
 	}
 
 	~SharedAVStruct()
@@ -54,6 +68,10 @@ public:
 		av_packet_free(&data);
 	}
 
+	AVPacket*& getPointer()
+	{
+		return data;
+	}
 private:
 	AVPacket* data;
 };
