@@ -1,3 +1,5 @@
+#pragma once
+
 extern "C" {
 #include <libavcodec/packet.h>
 #include <libavutil/frame.h>
@@ -19,6 +21,12 @@ public:
 
 using SharedAVPacket = std::shared_ptr<SharedAVStruct<AVPacket*>>;
 using SharedAVFrame = std::shared_ptr<SharedAVStruct<AVFrame*>>;
+
+template <typename U, RequireSpecialType<U>* = nullptr>
+std::shared_ptr<SharedAVStruct<U>> MakeSharedAVStruct()
+{
+	return std::make_shared<SharedAVStruct<U>>();
+}
 
 template <>
 class SharedAVStruct<AVFrame*>

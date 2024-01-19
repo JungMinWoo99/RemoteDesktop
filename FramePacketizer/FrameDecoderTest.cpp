@@ -53,12 +53,14 @@ public:
     }
     ~TestFrameProcessor()
     {
+        s_printer.EndPrint();
         avformat_close_input(formatContext);
     }
-    void FrameProcess(AVFrame* frame) override
+    void FrameProcess(SharedAVFrame frame) override
     {
+        auto avfrm = frame.get()->getPointer();
         std::this_thread::sleep_for(std::chrono::microseconds(1000000 / DEFALUT_FRAME_RATE));
-        CopyAVFrameToRaw(frame, yuv_frame_data);
+        CopyAVFrameToRaw(avfrm, yuv_frame_data);
         frame_ref = cnv.ConvertYUVToBGR(yuv_frame_data);
     }
 private:
@@ -76,46 +78,21 @@ int main() {
     FrameDecoder decoder;
     AVFormatContext* formatContext;
     TestFrameProcessor frame_proc(&formatContext, capture_obj.getBMI());
-    AVFrameHandlerThread dec_thr(decoder, frame_proc);
-    
+    AVFrameHandlerThread frm_thr(decoder, frame_proc);
+    frm_thr.StartHandle();
 
     // 파일에서 패킷 읽기
     while (true) {
         // AVPacket 할당
 
-        AVPacket* packet = av_packet_alloc();
-        if (packet == NULL)
-        {
-            fprintf(stderr, "av_packet_alloc fail\n");
-            return -1;
-        }
+        SharedAVPacket packet = MakeSharedAVStruct<AVPacket*>();
 
         //읽을 프레임이 없는 경우
-        if (av_read_frame(formatContext, packet) < 0)
+        if (av_read_frame(formatContext, packet.get()->getPointer()) < 0)
             break;
         
-
-        // 패킷 처리
-
-        // 여기에서 AVPacket을 사용하여 원하는 동작을 수행할 수 있습니다.
-        // 예: 비디오 프레임 디코딩, 처리 등.
         decoder.DecodePacket(packet);
-
-        // AVPacket 해제
-        av_packet_unref(packet);
-        av_packet_free(&packet);
     }
-
-    //디코딩된 프레임 출력
-    AVFrame* frame = av_frame_alloc();
-    if (frame == NULL)
-    {
-        cout << "av_frame_alloc fail" << endl;
-        exit(-1);
-    }
-
-    dec_thr.StartDecode();
     while (true);
-
     return 0;
 }

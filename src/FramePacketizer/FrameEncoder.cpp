@@ -1,6 +1,5 @@
 #include "FramePacketizer/FrameEncoder.h"
 
-
 #include <iostream>
 
 #define DEFALUT_SEGMENT_SEC 1
@@ -181,7 +180,7 @@ void FrameEncoder::FlushContext()
 	int error_code;
 	while (true)
 	{
-		SharedAVPacket packet = make_shared<SharedAVStruct<AVPacket*>>();
+		SharedAVPacket packet = MakeSharedAVStruct<AVPacket*>();
 		error_code = avcodec_receive_packet(enc_context, packet.get()->getPointer());
 		if (error_code != 0)
 		{
@@ -202,7 +201,7 @@ void FrameEncoder::FlushContext()
 _Check_return_ bool FrameEncoder::FillPacketBuf()
 {
 	bool ret = true;
-	SharedAVPacket packet = make_shared<SharedAVStruct<AVPacket*>>();
+	SharedAVPacket packet = MakeSharedAVStruct<AVPacket*>();
 
 	int error_code = avcodec_receive_packet(enc_context, packet.get()->getPointer());
 	if (error_code != 0)

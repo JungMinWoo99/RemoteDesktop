@@ -29,23 +29,15 @@ void AVFrameHandlerThread::EndHandle()
 
 void AVFrameHandlerThread::HandlerFunc()
 {
-	AVFrame* recv_frame;
+	SharedAVFrame recv_frame;
 	while (is_processing)
 	{
 		while (decoder.SendFrame(recv_frame))
-		{
 			proc_obj.FrameProcess(recv_frame);
-			av_frame_unref(recv_frame);
-			av_frame_free(&recv_frame);
-		}
 	}
 	decoder.FlushContext();
 	while (decoder.SendFrame(recv_frame))
-	{
 		proc_obj.FrameProcess(recv_frame);
-		av_frame_unref(recv_frame);
-		av_frame_free(&recv_frame);
-	}
 }
 
 PacketDecoderThread::PacketDecoderThread(FrameDecoder& decoder):decoder(decoder)
@@ -65,20 +57,17 @@ void PacketDecoderThread::EndDecoding()
 	proc_thread.join();
 }
 
-void PacketDecoderThread::InputPacket(AVPacket* input)
+void PacketDecoderThread::InputPacket(SharedAVPacket input)
 {
 	wait_que.push(input);
 }
 
 void PacketDecoderThread::DecodeFunc()
 {
-	AVPacket* packet;
+	SharedAVPacket packet;
 	while (is_processing)
 	{
 		if (wait_que.pop(packet))
-		{
 			decoder.DecodePacket(packet);
-			av_packet_free(&packet);
-		}
 	}
 }

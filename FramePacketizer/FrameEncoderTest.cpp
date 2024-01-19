@@ -137,7 +137,7 @@ int main(void)
 		shared_ptr<FrameData> next_frame;
 		shared_ptr<FrameData> prev_frame = nullptr;
 		AVFrame* av_frame;
-		CreateAVFrame(av_frame, encoding_buf.getEncCodecContext());
+		AllocAVFrameBuffer(av_frame, encoding_buf.getEncCodecContext());
 		AVPacket* recv_packet;
 		for (int i = 0; i < frame_per_sec * record_time; i++)
 		{
@@ -182,7 +182,7 @@ int main(void)
 		shared_ptr<FrameData> next_frame;
 		shared_ptr<FrameData> prev_frame = nullptr;
 		AVFrame* av_frame;
-		CreateAVFrame(av_frame, encoding_buf.getEncCodecContext());
+		AllocAVFrameBuffer(av_frame, encoding_buf.getEncCodecContext());
 		AVPacket* recv_packet;
 		for (int i = 0; i < frame_per_sec * record_time; i++)
 		{

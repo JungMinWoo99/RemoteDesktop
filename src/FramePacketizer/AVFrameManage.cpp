@@ -3,19 +3,8 @@
 
 using namespace std;
 
-bool CreateAVFrame(AVFrame*& output_av, const AVCodecContext* c_context)
+bool AllocAVFrameBuffer(AVFrame*& output_av, const AVCodecContext* c_context)
 {
-	//AVframe alloc
-	if (output_av == NULL)
-	{
-		output_av = av_frame_alloc();
-		if (output_av == NULL)
-		{
-			cout << "av_frame_alloc fail" << endl;
-			exit(-1);
-		}
-	}
-
 	//settint option
 	output_av->width = c_context->width;
 	output_av->height = c_context->height;
@@ -24,13 +13,13 @@ bool CreateAVFrame(AVFrame*& output_av, const AVCodecContext* c_context)
 	output_av->linesize[1] = output_av->width / 2;
 	output_av->linesize[2] = output_av->width / 2;
 
-	int ret = av_frame_get_buffer(output_av, 0);
-	if (ret != 0)
+	int error_code = av_frame_get_buffer(output_av, 0);
+	if (error_code != 0)
 	{
 		char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
-		av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, ret);
+		av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, error_code);
 		cout << "av_frame_get_buffer fail: " << errorStr << endl;
-		exit(ret);
+		exit(error_code);
 	}
 
 	return true;

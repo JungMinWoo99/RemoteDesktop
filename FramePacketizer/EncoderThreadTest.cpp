@@ -112,8 +112,8 @@ int main(void)
 			cout << "duplicated frame input: " << i << " remain frame: " << periodic_buf.Size() << endl;
 		prev_frame = next_frame;
 
-		SharedAVFrame av_frame = make_shared<SharedAVStruct<AVFrame*>>();
-		CreateAVFrame(av_frame.get()->getPointer(), encoding_obj.getEncCodecContext());
+		SharedAVFrame av_frame = MakeSharedAVStruct<AVFrame*>();
+		AllocAVFrameBuffer(av_frame.get()->getPointer(), encoding_obj.getEncCodecContext());
 		auto yuv_frame = pix_fmt_cvt.ConvertBGRToYUV(next_frame);
 		CopyRawToAVFrame(yuv_frame, av_frame.get()->getPointer());
 		enc_thr.InputFrame(av_frame);

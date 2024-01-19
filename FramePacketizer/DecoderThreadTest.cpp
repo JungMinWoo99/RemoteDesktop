@@ -56,10 +56,11 @@ public:
         s_printer.EndPrint();
         avformat_close_input(formatContext);
     }
-    void FrameProcess(AVFrame* frame) override
+    void FrameProcess(SharedAVFrame frame) override
     {
+        auto avfrm = frame.get()->getPointer();
         std::this_thread::sleep_for(std::chrono::microseconds(1000000 / DEFALUT_FRAME_RATE));
-        CopyAVFrameToRaw(frame, yuv_frame_data);
+        CopyAVFrameToRaw(avfrm, yuv_frame_data);
         frame_ref = cnv.ConvertYUVToBGR(yuv_frame_data);
     }
 private:
@@ -86,15 +87,10 @@ int main() {
     while (true) {
         // AVPacket 할당
 
-        AVPacket* packet = av_packet_alloc();
-        if (packet == NULL)
-        {
-            fprintf(stderr, "av_packet_alloc fail\n");
-            return -1;
-        }
+        SharedAVPacket packet = MakeSharedAVStruct<AVPacket*>();
 
         //읽을 프레임이 없는 경우
-        if (av_read_frame(formatContext, packet) < 0)
+        if (av_read_frame(formatContext, packet.get()->getPointer()) < 0)
             break;
 
         // 패킷 처리

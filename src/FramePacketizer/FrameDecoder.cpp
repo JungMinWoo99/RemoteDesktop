@@ -49,10 +49,11 @@ FrameDecoder::FrameDecoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 	}
 }
 
-bool FrameDecoder::DecodePacket(AVPacket* avpkt)
+bool FrameDecoder::DecodePacket(SharedAVPacket packet)
 {
 	lock_guard<std::mutex> lock(decoder_mtx);
 	bool is_success = true;
+	auto avpkt = packet.get()->getPointer();
 
 	int ret = avcodec_send_packet(dec_context, avpkt);
 	if (ret != 0)
@@ -89,21 +90,34 @@ bool FrameDecoder::DecodePacket(AVPacket* avpkt)
 	return is_success;
 }
 
-bool FrameDecoder::SendFrame(AVFrame*& frame)
+bool FrameDecoder::SendFrame(SharedAVFrame& avfrm)
 {
 	lock_guard<std::mutex> lock(decoder_mtx);
 	bool is_success = true;
 	if (!deced_frame_buf.empty())
 	{
-		is_success = deced_frame_buf.pop(frame);
+		is_success = deced_frame_buf.pop(avfrm);
 	}
 	else
 	{
 		while (FillFrameBuf());
 
-		is_success = deced_frame_buf.pop(frame);
+		is_success = deced_frame_buf.pop(avfrm);
 	}
 
+	return is_success;
+}
+
+bool FrameDecoder::GetRecentFrame(SharedAVFrame& frame)
+{
+	bool is_success;
+	if(recent_frame != nullptr)
+	{
+		frame = deced_frame_buf.back();
+		is_success = true;
+	}
+	else
+		is_success = false;
 	return is_success;
 }
 
@@ -125,17 +139,13 @@ FrameDecoder::~FrameDecoder()
 bool FrameDecoder::FillFrameBuf()
 {
 	bool ret = true;
-	AVFrame* frame = av_frame_alloc();
-	if (frame == NULL)
-	{
-		cout << "av_frame_alloc fail" << endl;
-		exit(-1);
-	}
-	int error_code = avcodec_receive_frame(dec_context, frame);
+	SharedAVFrame frame = MakeSharedAVStruct<AVFrame*>();
+	AVFrame* avfrm = frame.get()->getPointer();
+
+	int error_code = avcodec_receive_frame(dec_context, avfrm);
 	if (error_code != 0)
 	{
 		ret = false;
-		av_frame_free(&frame);
 		if (error_code == AVERROR(EAGAIN))
 		{
 			//output is not available in the current state - user must try to send input
@@ -154,6 +164,7 @@ bool FrameDecoder::FillFrameBuf()
 	}
 	else
 	{
+		recent_frame = frame;
 		deced_frame_buf.push(frame);
 		ret = true;
 	}
@@ -165,10 +176,12 @@ void FrameDecoder::FlushContext()
 {
 	avcodec_send_packet(dec_context, NULL);
 	int ret;
+
 	while (true)
 	{
-		AVFrame* frame = av_frame_alloc();
-		ret = avcodec_receive_frame(dec_context, frame);
+		SharedAVFrame frame = MakeSharedAVStruct<AVFrame*>();
+		AVFrame* avfrm = frame.get()->getPointer();
+		ret = avcodec_receive_frame(dec_context, avfrm);
 		if (ret != 0)
 		{
 			if (ret == AVERROR_EOF)

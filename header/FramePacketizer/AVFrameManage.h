@@ -7,7 +7,7 @@ extern "C" {
 #include <memory>
 #include "ScreenCapture/FrameData.h"
 
-bool CreateAVFrame(AVFrame*& output_av, const AVCodecContext* c_context);
+bool AllocAVFrameBuffer(AVFrame*& output_av, const AVCodecContext* c_context);
 
 void CopyAVFrameToRaw(const AVFrame* src ,std::shared_ptr<FrameData> dst);
 
