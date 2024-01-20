@@ -33,11 +33,11 @@ public:
 	FrameEncoderThread(FrameEncoder& encoder);
 	void StartEncoding();
 	void EndEncoding();
-	void InputFrame(AVFrame* input);
+	void InputFrame(std::shared_ptr<SharedAVFrame> input);
 
 private:
 	FrameEncoder& encoder;
-	MutexQueue<AVFrame*> wait_que;
+	MutexQueue<std::shared_ptr<SharedAVFrame>> wait_que;
 
 	std::thread proc_thread;
 

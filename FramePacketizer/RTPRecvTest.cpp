@@ -5,7 +5,6 @@
 #include "FramePacketizer/AVFrameManage.h"
 #include "FramePacketizer/CoderThread/DecoderThread.h"
 #include "ScreenPrinter/WinScreenPrinter.h"
-#include "FramePacketizer/SharedAVStruct.h"
 
 #include <iostream>
 

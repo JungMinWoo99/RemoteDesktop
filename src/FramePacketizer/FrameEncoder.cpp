@@ -36,7 +36,6 @@ FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 	enc_context->gop_size = GOP_SIZE;
 	enc_context->pix_fmt = DEFALUT_PIX_FMT;
 
-
 	enc_context->codec_type = AVMEDIA_TYPE_VIDEO;
 	enc_context->rc_buffer_size = enc_context->rc_max_rate;
 
@@ -88,11 +87,13 @@ FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 	}
 }
 
-_Check_return_ bool FrameEncoder::EncodeFrame(AVFrame* yuv_frame_data)
+_Check_return_ bool FrameEncoder::EncodeFrame(shared_ptr<SharedAVFrame> input)
 {
 	lock_guard<std::mutex> lock(encoder_mtx);
 	static int64_t prev_capture_time = 0;
 	static int pts_count = 0;
+
+	auto yuv_frame_data = input.get()->getPointer();
 
 	if (yuv_frame_data->pts < prev_capture_time)
 		return false;
@@ -101,8 +102,6 @@ _Check_return_ bool FrameEncoder::EncodeFrame(AVFrame* yuv_frame_data)
 		prev_capture_time = yuv_frame_data->pts;
 		yuv_frame_data->pts = pts_count++;
 	}
-
-	yuv_frame_data->pts = ++pts_count;
 
 	bool is_success = true;
 	int ret = avcodec_send_frame(enc_context, yuv_frame_data);
@@ -141,9 +140,10 @@ _Check_return_ bool FrameEncoder::EncodeFrame(AVFrame* yuv_frame_data)
 	return is_success;
 }
 
-_Check_return_ bool FrameEncoder::SendPacket(AVPacket*& packet)
+_Check_return_ bool FrameEncoder::SendPacket(shared_ptr<SharedAVPacket>& packet)
 {
 	lock_guard<std::mutex> lock(encoder_mtx);
+
 	bool is_success = true;
 	if (!enced_packet_buf.pop(packet))
 	{
@@ -164,7 +164,7 @@ AVCodecContext* FrameEncoder::getEncCodecContext()
 	return enc_context;
 }
 
-size_t FrameEncoder::getRemainPacketNum()
+size_t FrameEncoder::getBufferSize()
 {
 	return enced_packet_buf.size();
 }
@@ -180,8 +180,9 @@ void FrameEncoder::FlushContext()
 	int ret;
 	while (true)
 	{
-		AVPacket* packet = av_packet_alloc();
-		ret = avcodec_receive_packet(enc_context, packet);
+		auto packet= empty_packet_buf.getEmptyObj();
+
+		ret = avcodec_receive_packet(enc_context, packet.get()->getPointer());
 		if (ret != 0)
 		{
 			if (ret == AVERROR_EOF)
@@ -194,6 +195,7 @@ void FrameEncoder::FlushContext()
 				exit(ret);
 			}
 		}
+
 		enced_packet_buf.push(packet);
 	}
 }
@@ -201,18 +203,12 @@ void FrameEncoder::FlushContext()
 _Check_return_ bool FrameEncoder::FillPacketBuf()
 {
 	bool ret = true;
-	AVPacket* packet = av_packet_alloc();
-	if (packet == NULL)
-	{
-		cout << "av_packet_alloc fail" << endl;
-		exit(-1);
-	}
+	auto packet = empty_packet_buf.getEmptyObj();
 
-	int error_code = avcodec_receive_packet(enc_context, packet);
+	int error_code = avcodec_receive_packet(enc_context, packet.get()->getPointer());
 	if (error_code != 0)
 	{
 		ret = false;
-		av_packet_free(&packet);
 
 		if (error_code == AVERROR(EAGAIN))
 		{
@@ -235,6 +231,6 @@ _Check_return_ bool FrameEncoder::FillPacketBuf()
 		enced_packet_buf.push(packet);
 		ret = true;
 	}
-
+	
 	return ret;
 }

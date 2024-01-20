@@ -3,16 +3,8 @@
 
 using namespace std;
 
-bool CreateAVFrame(AVFrame*& output_av, const AVCodecContext* c_context)
+bool AllocAVFrameBuf(AVFrame*& output_av, const AVCodecContext* c_context)
 {
-	//AVframe alloc
-	output_av = av_frame_alloc();
-	if (output_av == NULL)
-	{
-		cout << "av_frame_alloc fail" << endl;
-		exit(-1);
-	}
-
 	//settint option
 	output_av->width = c_context->width;
 	output_av->height = c_context->height;

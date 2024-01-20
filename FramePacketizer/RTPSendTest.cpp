@@ -121,9 +121,9 @@ int main(void)
 
 	std::shared_ptr<FrameData> frame;
 	AVFrame* av_frame;
-	if (!CreateAVFrame(av_frame, enc_codec_context))
+	if (!AllocAVFrameBuf(av_frame, enc_codec_context))
 	{
-		cout << "CreateAVFrame fail" << endl;
+		cout << "AllocAVFrameBuf fail" << endl;
 		return -1;
 	}
 

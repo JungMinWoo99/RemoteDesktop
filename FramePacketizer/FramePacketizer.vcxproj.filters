@@ -33,9 +33,6 @@
     <ClCompile Include="FrameDecoderTest.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\FramePacketizer\FramePacketizer.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="RTPSendTest.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
@@ -57,6 +54,9 @@
     <ClCompile Include="DecoderThreadTest.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\FramePacketizer\AVStructPool.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\FramePacketizer\FrameDecoder.h">
@@ -68,12 +68,6 @@
     <ClInclude Include="..\header\FramePacketizer\PixFmtConverter.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\FramePacketizer\FramePacketizer.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\FramePacketizer\FramePacket.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\header\FramePacketizer\AVFrameManage.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -83,7 +77,7 @@
     <ClInclude Include="..\header\FramePacketizer\CoderThread\EncoderThread.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\FramePacketizer\SharedAVStruct.h">
+    <ClInclude Include="..\header\FramePacketizer\AVStructPool.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -21,21 +21,15 @@ void AVPacketHandlerThread::EndHandle()
 
 void AVPacketHandlerThread::HandlerFunc()
 {
-	AVPacket* recv_packet;
+	shared_ptr<SharedAVPacket> recv_packet;
 	while (is_processing)
 	{	
 		while (encoder.SendPacket(recv_packet))
-		{
-			proc_obj.PacketProcess(recv_packet);
-			av_packet_free(&recv_packet);
-		}
+			proc_obj.PacketProcess(recv_packet.get()->getPointer());
 	}
 	encoder.FlushContext();
 	while (encoder.SendPacket(recv_packet))
-	{
-		proc_obj.PacketProcess(recv_packet);
-		av_packet_free(&recv_packet);
-	}
+		proc_obj.PacketProcess(recv_packet.get()->getPointer());
 }
 
 FrameEncoderThread::FrameEncoderThread(FrameEncoder& encoder):encoder(encoder)
@@ -55,14 +49,14 @@ void FrameEncoderThread::EndEncoding()
 	proc_thread.join();
 }
 
-void FrameEncoderThread::InputFrame(AVFrame* input)
+void FrameEncoderThread::InputFrame(std::shared_ptr<SharedAVFrame> input)
 {
 	wait_que.push(input);
 }
 
 void FrameEncoderThread::EncoderFunc()
 {
-	AVFrame* frame;
+	shared_ptr<SharedAVFrame> frame;
 	while (is_processing)
 	{
 		if (wait_que.pop(frame))
