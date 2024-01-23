@@ -176,47 +176,34 @@ int main() {
 		};
 	*/
 
-	AVPacket* packet = av_packet_alloc();
-	if (packet == NULL)
-	{
-		fprintf(stderr, "av_packet_alloc fail\n");
-		return -1;
-	}
+	auto packet = AVStructPool<AVPacket*>::getInstance().getEmptyObj();
 
 	do {
-		av_read_frame(formatContext, packet);
-	} while (!(packet->flags & AV_PKT_FLAG_KEY));
-	//decoding_obj.DecodePacket(packet);
+		av_read_frame(formatContext, packet.get()->getPointer());
+	} while (!(packet.get()->getPointer()->flags & AV_PKT_FLAG_KEY));
 	dec_thr.InputPacket(packet);
 	cout << "recv key frame done" << endl;
 
 	
 	while (true) {
-		AVPacket* packet = av_packet_alloc();
+		auto packet = AVStructPool<AVPacket*>::getInstance().getEmptyObj();
 		if (packet == NULL)
 		{
 			fprintf(stderr, "av_packet_alloc fail\n");
 			return -1;
 		}
 
-		if (av_read_frame(formatContext, packet) == 0)
+		if (av_read_frame(formatContext, packet.get()->getPointer()) == 0)
 		{
-			//if(!decoding_obj.DecodePacket(packet))
-				//cout << "DecodePacket fail" << endl;
 			dec_thr.InputPacket(packet);
 		}
 		else
 		{
 			cout << "av_read_frame fail" << endl;
-			av_packet_free(&packet);
 		}
 	}
 	frm_thr.EndHandle();
 	dec_thr.EndDecoding();
-
-	// AVFormatContext ÇØÁ¦
-	
-	av_packet_free(&packet);
 
 	return 0;
 }

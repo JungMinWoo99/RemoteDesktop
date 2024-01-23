@@ -15,15 +15,13 @@ public:
 
 	_Check_return_ bool SendFrameData(std::shared_ptr<FrameData>& recv);
 
-	bool Empty();
-
-	int Size();
+	size_t Size();
 
 	~ScreenDataBuffer();
 
 private:
-	std::mutex send_frame_mtx;
 
 	MutexQueue<std::shared_ptr<FrameData>> mem_buf;
-	unsigned int buf_size;
+
+	unsigned int max_buf_size;
 };

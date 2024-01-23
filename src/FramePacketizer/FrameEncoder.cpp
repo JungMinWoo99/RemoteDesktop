@@ -89,12 +89,13 @@ FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 
 _Check_return_ bool FrameEncoder::EncodeFrame(shared_ptr<SharedAVFrame> input)
 {
-	lock_guard<std::mutex> lock(encoder_mtx);
+	encoder_mtx.lock();
+
 	static int64_t prev_capture_time = 0;
 	static int pts_count = 0;
 
 	auto yuv_frame_data = input.get()->getPointer();
-
+	
 	if (yuv_frame_data->pts < prev_capture_time)
 		return false;
 	else
@@ -102,18 +103,24 @@ _Check_return_ bool FrameEncoder::EncodeFrame(shared_ptr<SharedAVFrame> input)
 		prev_capture_time = yuv_frame_data->pts;
 		yuv_frame_data->pts = pts_count++;
 	}
+	
+	FillPacketBuf();
 
 	bool is_success = true;
 	int ret = avcodec_send_frame(enc_context, yuv_frame_data);
-	if (ret != 0)
+
+	if (ret == 0)
+	{
+		is_success = true;
+	}
+	else
 	{
 		if (ret == AVERROR(EAGAIN))
 		{
-			while (FillPacketBuf());
-			ret = avcodec_send_frame(enc_context, yuv_frame_data);
+			cout << "encoder input full" << endl;
+			is_success = false;
 		}
-
-		if (ret == AVERROR_EOF)
+		else if (ret == AVERROR_EOF)
 		{
 			cout << "end of encoder" << endl;
 			is_success = false;
@@ -137,21 +144,16 @@ _Check_return_ bool FrameEncoder::EncodeFrame(shared_ptr<SharedAVFrame> input)
 		}
 	}
 
+	encoder_mtx.unlock();
 	return is_success;
 }
 
 _Check_return_ bool FrameEncoder::SendPacket(shared_ptr<SharedAVPacket>& packet)
 {
-	lock_guard<std::mutex> lock(encoder_mtx);
-
-	bool is_success = true;
-	if (!enced_packet_buf.pop(packet))
-	{
-		while (FillPacketBuf());
-		is_success = enced_packet_buf.pop(packet);
-	}
-
-	return is_success;
+	encoder_mtx.lock();
+	FillPacketBuf();
+	encoder_mtx.unlock();
+	return enced_packet_buf.pop(packet);
 }
 
 const AVCodec* FrameEncoder::getEncCodec()
@@ -177,39 +179,24 @@ FrameEncoder::~FrameEncoder()
 void FrameEncoder::FlushContext()
 {
 	avcodec_send_frame(enc_context, NULL);
-	int ret;
-	while (true)
-	{
-		auto packet= empty_packet_buf.getEmptyObj();
-
-		ret = avcodec_receive_packet(enc_context, packet.get()->getPointer());
-		if (ret != 0)
-		{
-			if (ret == AVERROR_EOF)
-				break;
-			else
-			{
-				char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
-				av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, ret);
-				cout << "avcodec_receive_packet() fail: " << errorStr << endl;
-				exit(ret);
-			}
-		}
-
-		enced_packet_buf.push(packet);
-	}
+	
 }
 
 _Check_return_ bool FrameEncoder::FillPacketBuf()
 {
-	bool ret = true;
+	bool ret;
+
 	auto packet = empty_packet_buf.getEmptyObj();
 
 	int error_code = avcodec_receive_packet(enc_context, packet.get()->getPointer());
-	if (error_code != 0)
-	{
-		ret = false;
 
+	if (error_code == 0)
+	{
+		enced_packet_buf.push(packet);
+		ret = true;
+	}
+	else
+	{
 		if (error_code == AVERROR(EAGAIN))
 		{
 			//output is not available in the current state - user must try to send input
@@ -225,11 +212,7 @@ _Check_return_ bool FrameEncoder::FillPacketBuf()
 			cout << "avcodec_receive_packet() fail: " << errorStr << endl;
 			exit(error_code);
 		}
-	}
-	else
-	{
-		enced_packet_buf.push(packet);
-		ret = true;
+		ret = false;
 	}
 	
 	return ret;

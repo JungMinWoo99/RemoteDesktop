@@ -9,12 +9,6 @@ template <typename T>
 class MutexQueue
 {
 public:
-	bool empty()
-	{
-		std::lock_guard<std::mutex> lock(que_mtx);
-		return queue.empty();
-	}
-
 	size_t size()
 	{
 		std::lock_guard<std::mutex> lock(que_mtx);
@@ -37,12 +31,6 @@ public:
 	{
 		std::lock_guard<std::mutex> lock(que_mtx);
 		queue.push(val);
-	}
-
-	void pop()
-	{
-		std::lock_guard<std::mutex> lock(que_mtx);
-		queue.pop();
 	}
 
 	_Check_return_ bool pop(T& output)

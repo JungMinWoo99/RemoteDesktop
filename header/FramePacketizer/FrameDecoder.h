@@ -10,6 +10,7 @@ extern "C" {
 #include "Constant/VideoConstants.h"
 #include "ScreenCapture/FrameData.h"
 #include "MutexQueue/MutexQueue.h"
+#include "FramePacketizer/AVStructPool.h"
 
 #include<memory>
 
@@ -18,9 +19,9 @@ class FrameDecoder
 public:
 	FrameDecoder(int w = DEFALUT_WIDTH, int h = DEFALUT_HEIGHT, int frame_rate = DEFALUT_FRAME_RATE, AVCodecID coedec_id = AV_CODEC_ID_H264);
 
-	bool DecodePacket(AVPacket* avpkt);
+	bool DecodePacket(std::shared_ptr<SharedAVPacket> input);
 
-	bool SendFrame(AVFrame*& frame);
+	bool SendFrame(std::shared_ptr<SharedAVFrame>& frame);
 
 	void FlushContext();
 
@@ -30,12 +31,14 @@ public:
 
 	~FrameDecoder();
 private:
-	bool FillFrameBuf();
+	_Check_return_ bool FillFrameBuf();
 
 	const AVCodec* dec_codec;
 	AVCodecContext* dec_context;
 
-	MutexQueue<AVFrame*> deced_frame_buf;
+	AVStructPool<AVFrame*>& empty_frame_buf = AVStructPool<AVFrame*>::getInstance();
+
+	MutexQueue<std::shared_ptr<SharedAVFrame>> deced_frame_buf;
 
 	std::mutex decoder_mtx;
 

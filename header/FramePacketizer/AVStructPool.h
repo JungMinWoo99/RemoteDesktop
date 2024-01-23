@@ -37,12 +37,10 @@ public:
 	_Check_return_ std::shared_ptr<SharedAVStruct<T>> getEmptyObj()
 	{
 		T obj = nullptr;
-		while(!empty_obj_queue.pop(obj))
-		{
-			while (empty_obj_queue.empty())
-				empty_obj_queue.push(CreateObj());
-		}
-		return std::make_shared<SharedAVStruct<T>>(obj, *this);
+		if (!empty_obj_queue.pop(obj))
+			obj = CreateObj();
+		SharedAVStruct<T>* shared_obj = new SharedAVStruct<T>(obj, *this);
+		return std::make_shared<SharedAVStruct<T>>(*shared_obj);
 	}
 
 	size_t getPoolMemSize()
@@ -76,10 +74,8 @@ std::once_flag AVStructPool<T>::initFlag;
 template <typename T>
 class SharedAVStruct
 {
+	friend class AVStructPool<T>;
 public:
-	template <typename U = T, RequireSpecialType<U>* = nullptr>
-	SharedAVStruct(T data, AVStructPool<T>& data_src) :data_src(data_src), av_data(data) {}
-
 	~SharedAVStruct()
 	{
 		data_src.ReturnObj(av_data);
@@ -90,6 +86,9 @@ public:
 		return av_data;
 	}
 private:
+	template <typename U = T, RequireSpecialType<U>* = nullptr>
+	SharedAVStruct(T data, AVStructPool<T>& data_src) :data_src(data_src), av_data(data) {}
+
 	T av_data;
 	AVStructPool<T>& data_src;
 };

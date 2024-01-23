@@ -53,14 +53,13 @@ public:
 	void PacketProcess(AVPacket* packet) override
 	{
 		packet->stream_index = (*outStream)->index;
-		if (av_interleaved_write_frame(*formatContext, packet) < 0)
-			cout << "av_interleaved_write_frame fail" << endl;
-	}
-
-	void EndEncoding()
-	{
-		av_write_trailer(*formatContext);
-		cout << "end encoding" << endl;
+		int ret = av_interleaved_write_frame(*formatContext, packet);
+		if (ret < 0) {
+			char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
+			av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, ret);
+			cout << "av_interleaved_write_frame fail: " << errorStr << endl;
+			exit(ret);
+		}
 	}
 private:
 	AVFormatContext** formatContext;
@@ -96,10 +95,7 @@ int main(void)
 	PixFmtConverter pix_fmt_cvt;
 	shared_ptr<FrameData> next_frame;
 	shared_ptr<FrameData> prev_frame = nullptr;
-	AVFrame* av_frame;
-	AllocAVFrameBuf(av_frame, encoding_obj.getEncCodecContext());
-	AVPacket* recv_packet;
-
+	shared_ptr<SharedAVPacket> packet;
 	
 	capture_obj.StartCapture();
 	clt_obj.StartCollect();
@@ -110,27 +106,40 @@ int main(void)
 	for (int i = 0; i < frame_per_sec * record_time; i++)
 	{
 		while (!periodic_buf.SendFrameData(next_frame));
-
-		if (next_frame == prev_frame)
-			cout << "duplicated frame input: " << i << " remain frame: " << periodic_buf.Size() << endl;
-		prev_frame = next_frame;
+		auto frame = AVStructPool<AVFrame*>::getInstance().getEmptyObj();
+		auto av_frame = frame.get()->getPointer();
+		AllocAVFrameBuf(av_frame, encoding_obj.getEncCodecContext());
 		auto yuv_frame = pix_fmt_cvt.ConvertBGRToYUV(next_frame);
 		CopyRawToAVFrame(yuv_frame, av_frame);
-		enc_thr.InputFrame(av_frame);
+		enc_thr.InputFrame(frame);
 	}
 	cout << "capture done" << endl;
+
 	enc_thr.EndEncoding();
+	cout << "enc thread done" << endl;
 	frame_thr.EndHandle();
+	cout << "frm thread done" << endl;
 	clt_obj.EndCollect();
+	cout << "clt thread done" << endl;
 	capture_obj.EndCapture();	
+	cout << "cap thread done" << endl;
 	
-	while (encoding_obj.SendPacket(recv_packet))
+	while (encoding_obj.SendPacket(packet))
 	{
+		auto recv_packet = packet.get()->getPointer();
 		recv_packet->stream_index = outStream->index;
 		if (av_interleaved_write_frame(formatContext, recv_packet) < 0)
 			cout << "av_interleaved_write_frame fail" << endl;
-		av_packet_free(&recv_packet);
 	}
+	encoding_obj.FlushContext();
+	while (encoding_obj.SendPacket(packet))
+	{
+		auto recv_packet = packet.get()->getPointer();
+		recv_packet->stream_index = outStream->index;
+		if (av_interleaved_write_frame(formatContext, recv_packet) < 0)
+			cout << "av_interleaved_write_frame fail" << endl;
+	}
+	
 	av_write_trailer(formatContext);
 	cout << "end encoding" << endl;
 

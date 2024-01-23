@@ -40,7 +40,7 @@ AVFrame* AVStructPool<AVFrame*>::CreateObj()
 	AVFrame* data = av_frame_alloc();
 	if (data == NULL)
 	{
-		std::cout << "av_frame_alloc fail" << std::endl;
+		std::cout << "AVStructPool: av_frame_alloc fail" << std::endl;
 		exit(-1);
 	}
 	return data;
@@ -52,7 +52,7 @@ AVPacket* AVStructPool<AVPacket*>::CreateObj()
 	AVPacket* data = av_packet_alloc();
 	if (data == NULL)
 	{
-		std::cout << "av_packet_alloc fail" << std::endl;
+		std::cout << "AVStructPool: av_packet_alloc fail" << std::endl;
 		exit(-1);
 	}
 	return data;

@@ -35,11 +35,11 @@ public:
 	PacketDecoderThread(FrameDecoder& decoder);
 	void StartDecoding();
 	void EndDecoding();
-	void InputPacket(AVPacket* input);
+	void InputPacket(std::shared_ptr<SharedAVPacket> input);
 
 private:
 	FrameDecoder& decoder;
-	MutexQueue<AVPacket*> wait_que;
+	MutexQueue<std::shared_ptr<SharedAVPacket>> wait_que;
 
 	std::thread proc_thread;
 

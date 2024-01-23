@@ -58,8 +58,13 @@ public:
 	void PacketProcess(AVPacket* packet) override
 	{
 		packet->stream_index = (*outStream)->index;
-		if (av_interleaved_write_frame(*formatContext, packet) < 0)
-			cout << "av_interleaved_write_frame fail" << endl;
+		int ret = av_interleaved_write_frame(*formatContext, packet);
+		if (ret < 0) {
+			char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
+			av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, ret);
+			cout << "av_interleaved_write_frame fail: " << errorStr << endl;
+			exit(ret);
+		}
 	}
 
 	void EndEncoding()
@@ -81,7 +86,7 @@ int main(void)
 
 	//프레임 버퍼 설정
 	ScreenDataBuffer screen_buf(5);
-	ScreenDataBuffer periodic_buf(1);
+	ScreenDataBuffer periodic_buf(10);
 	CaptureThread capture_obj(screen_buf);
 	PeriodicDataCollector clt_obj(screen_buf, periodic_buf);
 	FrameEncoder encoding_obj;
@@ -120,19 +125,23 @@ int main(void)
 	pkt_thr.StartHandle();
 
 	std::shared_ptr<FrameData> frame;
-	AVFrame* av_frame;
-	if (!AllocAVFrameBuf(av_frame, enc_codec_context))
-	{
-		cout << "AllocAVFrameBuf fail" << endl;
-		return -1;
-	}
 
 	bool is_stream = true;
 	while (is_stream)
 	{
 		while (!periodic_buf.SendFrameData(frame));
-		CopyRawToAVFrame(pix_fmt_cvt.ConvertBGRToYUV(frame), av_frame);
-		enc_thr.InputFrame(av_frame);
+		auto yuv_data = pix_fmt_cvt.ConvertBGRToYUV(frame);
+
+		shared_ptr<SharedAVFrame> frame_obj = AVStructPool<AVFrame*>::getInstance().getEmptyObj();
+		AVFrame* av_frame = frame_obj.get()->getPointer();
+		if (!AllocAVFrameBuf(av_frame, enc_codec_context))
+		{
+			cout << "AllocAVFrameBuf fail" << endl;
+			return -1;
+		}
+		
+		CopyRawToAVFrame(yuv_data, av_frame);
+		enc_thr.InputFrame(frame_obj);
 		//cout << "remain frame:" << FrameData::getRemainFrame() <<" remain packet:"<<encoding_obj.getRemainPacketNum() << endl;
 	}
 
@@ -141,7 +150,6 @@ int main(void)
 	clt_obj.EndCollect();
 	capture_obj.EndCapture();
 
-	av_frame_free(&av_frame);
 	avformat_free_context(formatContext);
 
 	return 0;

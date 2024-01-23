@@ -21,7 +21,7 @@ class FrameEncoder
 public:
 	FrameEncoder(int w = DEFALUT_WIDTH, int h = DEFALUT_HEIGHT, int frame_rate = DEFALUT_FRAME_RATE, AVCodecID coedec_id = AV_CODEC_ID_H264);
 	
-	_Check_return_ bool EncodeFrame(std::shared_ptr<SharedAVFrame> yuv_frame_data);
+	_Check_return_ bool EncodeFrame(std::shared_ptr<SharedAVFrame> input);
 
 	_Check_return_ bool SendPacket(std::shared_ptr<SharedAVPacket>& packet);
 

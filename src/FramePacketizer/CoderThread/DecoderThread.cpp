@@ -1,5 +1,7 @@
 #include "FramePacketizer/CoderThread/DecoderThread.h"
 
+#include <iostream>
+
 using namespace std;
 
 AVFrameHandlerThread::AVFrameHandlerThread(FrameDecoder& decoder, AVFrameProcessor& proc_obj) :decoder(decoder), proc_obj(proc_obj)
@@ -29,22 +31,15 @@ void AVFrameHandlerThread::EndHandle()
 
 void AVFrameHandlerThread::HandlerFunc()
 {
-	AVFrame* recv_frame;
+	//You should not create more than one thread calling this function
+	static mutex mtx;
+	lock_guard<mutex> lock(mtx);
+
+	shared_ptr<SharedAVFrame> recv_frame;
 	while (is_processing)
 	{
-		while (decoder.SendFrame(recv_frame))
-		{
-			proc_obj.FrameProcess(recv_frame);
-			av_frame_unref(recv_frame);
-			av_frame_free(&recv_frame);
-		}
-	}
-	decoder.FlushContext();
-	while (decoder.SendFrame(recv_frame))
-	{
-		proc_obj.FrameProcess(recv_frame);
-		av_frame_unref(recv_frame);
-		av_frame_free(&recv_frame);
+		if (decoder.SendFrame(recv_frame))
+			proc_obj.FrameProcess(recv_frame.get()->getPointer());
 	}
 }
 
@@ -65,20 +60,53 @@ void PacketDecoderThread::EndDecoding()
 	proc_thread.join();
 }
 
-void PacketDecoderThread::InputPacket(AVPacket* input)
+void PacketDecoderThread::InputPacket(std::shared_ptr<SharedAVPacket> input)
 {
 	wait_que.push(input);
 }
 
 void PacketDecoderThread::DecodeFunc()
 {
-	AVPacket* packet;
+	//You should not create more than one thread calling this function
+	static mutex mtx;
+	lock_guard<mutex> lock(mtx);
+
+	shared_ptr<SharedAVPacket> packet;
+
 	while (is_processing)
 	{
 		if (wait_que.pop(packet))
 		{
-			decoder.DecodePacket(packet);
-			av_packet_free(&packet);
+			bool ret = decoder.DecodePacket(packet);
+			if (ret == false)
+			{
+				cout << "packet decoding fail" << endl;
+				ret = decoder.DecodePacket(packet);
+				if (ret == false)
+				{
+					cout << "packet decoding fail again!" << endl;
+
+					//error handler required
+					//add after
+				}
+			}
+		}
+	}
+
+	while (wait_que.pop(packet))
+	{
+		bool ret = decoder.DecodePacket(packet);
+		if (ret == false)
+		{
+			cout << "frame encoding fail" << endl;
+			ret = decoder.DecodePacket(packet);
+			if (ret == false)
+			{
+				cout << "frame encoding fail again!" << endl;
+
+				//error handler required
+				//add after
+			}
 		}
 	}
 }
