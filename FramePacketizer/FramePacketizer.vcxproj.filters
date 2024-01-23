@@ -80,5 +80,8 @@
     <ClInclude Include="..\header\FramePacketizer\AVStructPool.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="TestQueueMonitorThread.h">
+      <Filter>TestCode</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

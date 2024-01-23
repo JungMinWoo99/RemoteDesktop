@@ -43,7 +43,7 @@ void AVFrameHandlerThread::HandlerFunc()
 	}
 }
 
-PacketDecoderThread::PacketDecoderThread(FrameDecoder& decoder):decoder(decoder)
+PacketDecoderThread::PacketDecoderThread(FrameDecoder& decoder):decoder(decoder), wait_que("PacketDecoderThread")
 {
 	is_processing = false;
 }

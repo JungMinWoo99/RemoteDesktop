@@ -4,6 +4,7 @@
 #include "FramePacketizer/FrameEncoder.h"
 #include "FramePacketizer/AVFrameManage.h"
 #include "FramePacketizer/CoderThread/EncoderThread.h"
+#include "TestQueueMonitorThread.h"
 
 #include <iostream>
 
@@ -80,6 +81,9 @@ private:
 
 int main(void)
 {
+	TestQueueMonitorThread monitor_thread(std::chrono::seconds(10));
+	monitor_thread.start();
+
 	int w, h;
 	w = DEFALUT_WIDTH;
 	h = DEFALUT_HEIGHT;
@@ -151,6 +155,8 @@ int main(void)
 	capture_obj.EndCapture();
 
 	avformat_free_context(formatContext);
+
+	monitor_thread.stop();
 
 	return 0;
 }

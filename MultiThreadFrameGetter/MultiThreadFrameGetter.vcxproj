@@ -127,7 +127,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>ScreenCapture.obj;FrameData.obj;ScreenDataBuffer.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>ScreenCapture.obj;FrameData.obj;ScreenDataBuffer.obj;MutexQueue.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

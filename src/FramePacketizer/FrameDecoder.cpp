@@ -9,7 +9,7 @@
 using namespace std;
 
 FrameDecoder::FrameDecoder(int w, int h, int frame_rate, AVCodecID coedec_id)
-	:frame_rate(frame_rate)
+	:frame_rate(frame_rate), deced_frame_buf("FrameDecoder")
 {
 	int ret;
 

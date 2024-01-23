@@ -53,7 +53,7 @@ private:
 	static std::unique_ptr<AVStructPool<T>> instance;
 	static std::once_flag initFlag;
 
-	AVStructPool() {};
+	AVStructPool():empty_obj_queue("AVStructPool") {};
 
 	static void initInstance() {
 		instance.reset(new AVStructPool<T>);
@@ -76,8 +76,11 @@ class SharedAVStruct
 {
 	friend class AVStructPool<T>;
 public:
+	static int getRemainAVStruct();
+
 	~SharedAVStruct()
 	{
+		remain--;
 		data_src.ReturnObj(av_data);
 	}
 
@@ -86,10 +89,20 @@ public:
 		return av_data;
 	}
 private:
+	static int remain;
+
 	template <typename U = T, RequireSpecialType<U>* = nullptr>
-	SharedAVStruct(T data, AVStructPool<T>& data_src) :data_src(data_src), av_data(data) {}
+	SharedAVStruct(T data, AVStructPool<T>& data_src) :data_src(data_src), av_data(data) { remain++; }
 
 	T av_data;
 	AVStructPool<T>& data_src;
 };
 
+template<class T>
+int SharedAVStruct<T>::remain = 0;
+
+template<class T>
+int SharedAVStruct<T>::getRemainAVStruct()
+{
+	return remain;
+}

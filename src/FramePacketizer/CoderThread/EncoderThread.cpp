@@ -37,7 +37,7 @@ void AVPacketHandlerThread::HandlerFunc()
 	}
 }
 
-FrameEncoderThread::FrameEncoderThread(FrameEncoder& encoder):encoder(encoder)
+FrameEncoderThread::FrameEncoderThread(FrameEncoder& encoder) :encoder(encoder), wait_que("FrameEncoderThread")
 {
 	is_processing = false;
 }

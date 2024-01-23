@@ -11,7 +11,7 @@
 using namespace std;
 
 FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
-	:frame_rate(frame_rate)
+	:frame_rate(frame_rate),enced_packet_buf("FrameEncoder")
 {
 	int ret;
 

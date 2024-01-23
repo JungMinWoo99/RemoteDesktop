@@ -1,5 +1,6 @@
 #include "FramePacketizer/AVStructPool.h"
 #include <iostream>
+
 template <>
 AVStructPool<AVFrame*>::~AVStructPool()
 {

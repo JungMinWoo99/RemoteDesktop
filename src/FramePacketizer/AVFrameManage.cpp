@@ -5,6 +5,8 @@ using namespace std;
 
 bool AllocAVFrameBuf(AVFrame*& output_av, const AVCodecContext* c_context)
 {
+	av_frame_unref(output_av);
+
 	//settint option
 	output_av->width = c_context->width;
 	output_av->height = c_context->height;
@@ -29,6 +31,7 @@ void CopyAVFrameToRaw(const AVFrame* src, std::shared_ptr<FrameData> dst)
 {
 	BYTE* frame_ptr = dst.get()->getMemPointer();
 	size_t frame_size = dst.get()->getMemSize();
+
 	memcpy(frame_ptr,
 		src->data[0],
 		frame_size * 2 / 3);
