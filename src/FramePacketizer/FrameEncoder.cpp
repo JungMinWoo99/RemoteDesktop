@@ -89,7 +89,6 @@ FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 
 _Check_return_ bool FrameEncoder::EncodeFrame(shared_ptr<SharedAVFrame> input)
 {
-	encoder_mtx.lock();
 
 	static int64_t prev_capture_time = 0;
 	static int pts_count = 0;
@@ -104,7 +103,7 @@ _Check_return_ bool FrameEncoder::EncodeFrame(shared_ptr<SharedAVFrame> input)
 		yuv_frame_data->pts = pts_count++;
 	}
 	
-	FillPacketBuf();
+	while(FillPacketBuf());
 
 	bool is_success = true;
 	int ret = avcodec_send_frame(enc_context, yuv_frame_data);
@@ -144,15 +143,11 @@ _Check_return_ bool FrameEncoder::EncodeFrame(shared_ptr<SharedAVFrame> input)
 		}
 	}
 
-	encoder_mtx.unlock();
 	return is_success;
 }
 
 _Check_return_ bool FrameEncoder::SendPacket(shared_ptr<SharedAVPacket>& packet)
 {
-	encoder_mtx.lock();
-	FillPacketBuf();
-	encoder_mtx.unlock();
 	return enced_packet_buf.pop(packet);
 }
 
@@ -179,7 +174,7 @@ FrameEncoder::~FrameEncoder()
 void FrameEncoder::FlushContext()
 {
 	avcodec_send_frame(enc_context, NULL);
-	
+	while (FillPacketBuf());
 }
 
 _Check_return_ bool FrameEncoder::FillPacketBuf()

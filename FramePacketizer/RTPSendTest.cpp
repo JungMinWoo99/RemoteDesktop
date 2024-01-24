@@ -146,7 +146,6 @@ int main(void)
 		
 		CopyRawToAVFrame(yuv_data, av_frame);
 		enc_thr.InputFrame(frame_obj);
-		//cout << "remain frame:" << FrameData::getRemainFrame() <<" remain packet:"<<encoding_obj.getRemainPacketNum() << endl;
 	}
 
 	pkt_thr.EndHandle();
