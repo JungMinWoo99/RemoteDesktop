@@ -65,10 +65,11 @@
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="..\PropertySheet.props" />
+    <Import Project="..\DebugPropertySheet.props" />
   </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\ReleasePropertySheet.props" />
   </ImportGroup>
   <PropertyGroup Label="UserMacros" />
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -105,15 +106,15 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%_FFMPEG_INCLUDE%;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <AdditionalModuleDependencies>
       </AdditionalModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>%_FFMPEG_LIB%;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swscale.lib;GDI32.lib;user32.lib;FrameData.obj;PeriodicDataCollector.obj;ScreenCapture.obj;ScreenDataBuffer.obj;ScreenDataPriorityQueue.obj;MultiThreadCapture.obj;CaptureThread.obj;MutexQueue.obj;WinScreenPrinter.obj</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>FrameData.obj;PeriodicDataCollector.obj;ScreenCapture.obj;ScreenDataBuffer.obj;CaptureThread.obj;WinScreenPrinter.obj</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -130,45 +131,51 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>FrameData.obj;PeriodicDataCollector.obj;ScreenDataBuffer.obj;CaptureThread.obj;ScreenCapture.obj;WinScreenPrinter.obj;MutexQueue.obj;AVStructPool.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\src\FramePacketizer\AVFrameManage.cpp" />
+    <ClCompile Include="..\src\FramePacketizer\AVStructPool.cpp" />
     <ClCompile Include="..\src\FramePacketizer\CoderThread\DecoderThread.cpp" />
     <ClCompile Include="..\src\FramePacketizer\CoderThread\EncoderThread.cpp" />
     <ClCompile Include="..\src\FramePacketizer\FrameDecoder.cpp" />
     <ClCompile Include="..\src\FramePacketizer\FrameEncoder.cpp" />
-    <ClCompile Include="..\src\FramePacketizer\FramePacketizer.cpp" />
     <ClCompile Include="..\src\FramePacketizer\PixFmtConverter.cpp" />
     <ClCompile Include="DecoderThreadTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="EncoderThreadTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="FrameDecoderTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="FrameEncoderTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="RTPRecvTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="RTPSendTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\FramePacketizer\AVFrameManage.h" />
+    <ClInclude Include="..\header\FramePacketizer\AVStructPool.h" />
     <ClInclude Include="..\header\FramePacketizer\CoderThread\DecoderThread.h" />
     <ClInclude Include="..\header\FramePacketizer\CoderThread\EncoderThread.h" />
     <ClInclude Include="..\header\FramePacketizer\FrameDecoder.h" />
     <ClInclude Include="..\header\FramePacketizer\FrameEncoder.h" />
-    <ClInclude Include="..\header\FramePacketizer\FramePacket.h" />
-    <ClInclude Include="..\header\FramePacketizer\FramePacketizer.h" />
     <ClInclude Include="..\header\FramePacketizer\PixFmtConverter.h" />
-    <ClInclude Include="..\header\FramePacketizer\SharedAVStruct.h" />
+    <ClInclude Include="TestQueueMonitorThread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

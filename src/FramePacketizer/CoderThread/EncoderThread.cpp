@@ -1,6 +1,10 @@
 #include "FramePacketizer/CoderThread/EncoderThread.h"
 
+#include <iostream>
+
 using namespace std;
+
+std::condition_variable cv;
 
 AVPacketHandlerThread::AVPacketHandlerThread(FrameEncoder& encoder, AVPacketProcessor& proc_obj) :encoder(encoder), proc_obj(proc_obj)
 {
@@ -21,18 +25,19 @@ void AVPacketHandlerThread::EndHandle()
 
 void AVPacketHandlerThread::HandlerFunc()
 {
-	SharedAVPacket recv_packet;
+	//You should not create more than one thread calling this function
+	static mutex mtx;
+	lock_guard<mutex> lock(mtx);
+	
+	shared_ptr<SharedAVPacket> recv_packet;
 	while (is_processing)
 	{	
-		while (encoder.SendPacket(recv_packet))
-			proc_obj.PacketProcess(recv_packet);
+		if (encoder.SendPacket(recv_packet))
+			proc_obj.PacketProcess(recv_packet.get()->getPointer());
 	}
-	encoder.FlushContext();
-	while (encoder.SendPacket(recv_packet))
-		proc_obj.PacketProcess(recv_packet);
 }
 
-FrameEncoderThread::FrameEncoderThread(FrameEncoder& encoder):encoder(encoder)
+FrameEncoderThread::FrameEncoderThread(FrameEncoder& encoder) :encoder(encoder), wait_que("FrameEncoderThread")
 {
 	is_processing = false;
 }
@@ -49,19 +54,52 @@ void FrameEncoderThread::EndEncoding()
 	proc_thread.join();
 }
 
-void FrameEncoderThread::InputFrame(SharedAVFrame input)
+void FrameEncoderThread::InputFrame(std::shared_ptr<SharedAVFrame> input)
 {
 	wait_que.push(input);
 }
 
 void FrameEncoderThread::EncoderFunc()
 {
-	SharedAVFrame frame;
+	//You should not create more than one thread calling this function
+	static mutex mtx;
+	lock_guard<mutex> lock(mtx);
+
+	shared_ptr<SharedAVFrame> frame;
 	while (is_processing)
 	{
 		if (wait_que.pop(frame))
 		{
-			encoder.EncodeFrame(frame);
+			bool ret = encoder.EncodeFrame(frame);
+			if (ret == false)
+			{
+				cout << "frame encoding fail" << endl;
+				ret = encoder.EncodeFrame(frame);
+				if (ret == false)
+				{
+					cout << "frame encoding fail again!" << endl;
+
+					//error handler required
+					//add after
+				}
+			}
+		}
+	}
+	
+	while (wait_que.pop(frame))
+	{
+		bool ret = encoder.EncodeFrame(frame);
+		if (ret == false)
+		{
+			cout << "frame encoding fail" << endl;
+			ret = encoder.EncodeFrame(frame);
+			if (ret == false)
+			{
+				cout << "frame encoding fail again!" << endl;
+
+				//error handler required
+				//add after
+			}
 		}
 	}
 }

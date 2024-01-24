@@ -21,6 +21,9 @@
     <ClCompile Include="QueueTest.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\MutexQueue\MutexQueue.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\MutexQueue\MutexQueue.h">

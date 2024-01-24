@@ -6,7 +6,7 @@
 class AVFrameProcessor abstract
 {
 public:
-	virtual void FrameProcess(SharedAVFrame) abstract;
+	virtual void FrameProcess(AVFrame*) abstract;
 };
 
 class AVFrameHandlerThread
@@ -16,7 +16,7 @@ public:
 	void StartHandle();
 	void EndHandle();
 
-protected:
+private:
 	FrameDecoder& decoder;
 	AVFrameProcessor& proc_obj;
 	
@@ -26,7 +26,7 @@ protected:
 
 	bool is_processing;
 
-	virtual void HandlerFunc();
+	void HandlerFunc();
 };
 
 class PacketDecoderThread
@@ -35,11 +35,11 @@ public:
 	PacketDecoderThread(FrameDecoder& decoder);
 	void StartDecoding();
 	void EndDecoding();
-	void InputPacket(SharedAVPacket input);
+	void InputPacket(std::shared_ptr<SharedAVPacket> input);
 
-protected:
+private:
 	FrameDecoder& decoder;
-	MutexQueue<SharedAVPacket> wait_que;
+	MutexQueue<std::shared_ptr<SharedAVPacket>> wait_que;
 
 	std::thread proc_thread;
 

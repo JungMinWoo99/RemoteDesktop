@@ -1,5 +1,6 @@
 #include "FramePacketizer/FrameEncoder.h"
 
+
 #include <iostream>
 
 #define DEFALUT_SEGMENT_SEC 1
@@ -10,7 +11,7 @@
 using namespace std;
 
 FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
-	:frame_rate(frame_rate)
+	:frame_rate(frame_rate),enced_packet_buf("FrameEncoder")
 {
 	int ret;
 
@@ -34,7 +35,6 @@ FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 	enc_context->framerate = { frame_rate, 1 };
 	enc_context->gop_size = GOP_SIZE;
 	enc_context->pix_fmt = DEFALUT_PIX_FMT;
-
 
 	enc_context->codec_type = AVMEDIA_TYPE_VIDEO;
 	enc_context->rc_buffer_size = enc_context->rc_max_rate;
@@ -87,13 +87,14 @@ FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 	}
 }
 
-_Check_return_ bool FrameEncoder::EncodeFrame(SharedAVFrame frame_data)
+_Check_return_ bool FrameEncoder::EncodeFrame(shared_ptr<SharedAVFrame> input)
 {
-	lock_guard<std::mutex> lock(encoder_mtx);
+
 	static int64_t prev_capture_time = 0;
 	static int pts_count = 0;
-	auto yuv_frame_data = frame_data.get()->getPointer();
 
+	auto yuv_frame_data = input.get()->getPointer();
+	
 	if (yuv_frame_data->pts < prev_capture_time)
 		return false;
 	else
@@ -101,20 +102,24 @@ _Check_return_ bool FrameEncoder::EncodeFrame(SharedAVFrame frame_data)
 		prev_capture_time = yuv_frame_data->pts;
 		yuv_frame_data->pts = pts_count++;
 	}
-
-	yuv_frame_data->pts = ++pts_count;
+	
+	while(FillPacketBuf());
 
 	bool is_success = true;
 	int ret = avcodec_send_frame(enc_context, yuv_frame_data);
-	if (ret != 0)
+
+	if (ret == 0)
+	{
+		is_success = true;
+	}
+	else
 	{
 		if (ret == AVERROR(EAGAIN))
 		{
-			while (FillPacketBuf());
-			ret = avcodec_send_frame(enc_context, yuv_frame_data);
+			cout << "encoder input full" << endl;
+			is_success = false;
 		}
-
-		if (ret == AVERROR_EOF)
+		else if (ret == AVERROR_EOF)
 		{
 			cout << "end of encoder" << endl;
 			is_success = false;
@@ -141,17 +146,9 @@ _Check_return_ bool FrameEncoder::EncodeFrame(SharedAVFrame frame_data)
 	return is_success;
 }
 
-_Check_return_ bool FrameEncoder::SendPacket(SharedAVPacket& packet)
+_Check_return_ bool FrameEncoder::SendPacket(shared_ptr<SharedAVPacket>& packet)
 {
-	lock_guard<std::mutex> lock(encoder_mtx);
-	bool is_success = true;
-	if (!enced_packet_buf.pop(packet))
-	{
-		while (FillPacketBuf());
-		is_success = enced_packet_buf.pop(packet);
-	}
-
-	return is_success;
+	return enced_packet_buf.pop(packet);
 }
 
 const AVCodec* FrameEncoder::getEncCodec()
@@ -164,7 +161,7 @@ AVCodecContext* FrameEncoder::getEncCodecContext()
 	return enc_context;
 }
 
-size_t FrameEncoder::getRemainPacketNum()
+size_t FrameEncoder::getBufferSize()
 {
 	return enced_packet_buf.size();
 }
@@ -177,37 +174,24 @@ FrameEncoder::~FrameEncoder()
 void FrameEncoder::FlushContext()
 {
 	avcodec_send_frame(enc_context, NULL);
-	int error_code;
-	while (true)
-	{
-		SharedAVPacket packet = MakeSharedAVStruct<AVPacket*>();
-		error_code = avcodec_receive_packet(enc_context, packet.get()->getPointer());
-		if (error_code != 0)
-		{
-			if (error_code == AVERROR_EOF)
-				break;
-			else
-			{
-				char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
-				av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, error_code);
-				cout << "avcodec_receive_packet() fail: " << errorStr << endl;
-				exit(error_code);
-			}
-		}
-		enced_packet_buf.push(packet);
-	}
+	while (FillPacketBuf());
 }
 
 _Check_return_ bool FrameEncoder::FillPacketBuf()
 {
-	bool ret = true;
-	SharedAVPacket packet = MakeSharedAVStruct<AVPacket*>();
+	bool ret;
+
+	auto packet = empty_packet_buf.getEmptyObj();
 
 	int error_code = avcodec_receive_packet(enc_context, packet.get()->getPointer());
-	if (error_code != 0)
-	{
-		ret = false;
 
+	if (error_code == 0)
+	{
+		enced_packet_buf.push(packet);
+		ret = true;
+	}
+	else
+	{
 		if (error_code == AVERROR(EAGAIN))
 		{
 			//output is not available in the current state - user must try to send input
@@ -223,12 +207,8 @@ _Check_return_ bool FrameEncoder::FillPacketBuf()
 			cout << "avcodec_receive_packet() fail: " << errorStr << endl;
 			exit(error_code);
 		}
+		ret = false;
 	}
-	else
-	{
-		enced_packet_buf.push(packet);
-		ret = true;
-	}
-
+	
 	return ret;
 }

@@ -9,7 +9,7 @@
 using namespace std;
 
 FrameDecoder::FrameDecoder(int w, int h, int frame_rate, AVCodecID coedec_id)
-	:frame_rate(frame_rate)
+	:frame_rate(frame_rate), deced_frame_buf("FrameDecoder")
 {
 	int ret;
 
@@ -49,22 +49,29 @@ FrameDecoder::FrameDecoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 	}
 }
 
-bool FrameDecoder::DecodePacket(SharedAVPacket packet)
+bool FrameDecoder::DecodePacket(std::shared_ptr<SharedAVPacket> input)
 {
-	lock_guard<std::mutex> lock(decoder_mtx);
-	bool is_success = true;
-	auto avpkt = packet.get()->getPointer();
+	decoder_mtx.lock();
 
+	auto avpkt = input.get()->getPointer();
+
+	FillFrameBuf();
+
+	bool is_success = true;
 	int ret = avcodec_send_packet(dec_context, avpkt);
-	if (ret != 0)
+
+	if (ret == 0)
+	{
+		is_success = true;
+	}
+	else
 	{
 		if (ret == AVERROR(EAGAIN))
 		{
-			while (FillFrameBuf());
-			ret = avcodec_send_packet(dec_context, avpkt);
+			cout << "encoder input full" << endl;
+			is_success = false;
 		}
-
-		if (ret == AVERROR_EOF)
+		else if (ret == AVERROR_EOF)
 		{
 			cout << "end of decoder" << endl;
 			is_success = false;
@@ -87,38 +94,17 @@ bool FrameDecoder::DecodePacket(SharedAVPacket packet)
 			exit(ret);
 		}
 	}
+
+	decoder_mtx.unlock();
 	return is_success;
 }
 
-bool FrameDecoder::SendFrame(SharedAVFrame& avfrm)
+bool FrameDecoder::SendFrame(shared_ptr<SharedAVFrame>& frame)
 {
-	lock_guard<std::mutex> lock(decoder_mtx);
-	bool is_success = true;
-	if (!deced_frame_buf.empty())
-	{
-		is_success = deced_frame_buf.pop(avfrm);
-	}
-	else
-	{
-		while (FillFrameBuf());
-
-		is_success = deced_frame_buf.pop(avfrm);
-	}
-
-	return is_success;
-}
-
-bool FrameDecoder::GetRecentFrame(SharedAVFrame& frame)
-{
-	bool is_success;
-	if(recent_frame != nullptr)
-	{
-		frame = deced_frame_buf.back();
-		is_success = true;
-	}
-	else
-		is_success = false;
-	return is_success;
+	decoder_mtx.lock();
+	FillFrameBuf();
+	decoder_mtx.unlock();
+	return deced_frame_buf.pop(frame);
 }
 
 const AVCodec* FrameDecoder::getDecCodec()
@@ -136,16 +122,27 @@ FrameDecoder::~FrameDecoder()
 	avcodec_free_context(&dec_context);
 }
 
+void FrameDecoder::FlushContext()
+{
+	avcodec_send_packet(dec_context, NULL);
+	while (FillFrameBuf());
+}
+
 bool FrameDecoder::FillFrameBuf()
 {
-	bool ret = true;
-	SharedAVFrame frame = MakeSharedAVStruct<AVFrame*>();
-	AVFrame* avfrm = frame.get()->getPointer();
+	bool ret;
 
-	int error_code = avcodec_receive_frame(dec_context, avfrm);
-	if (error_code != 0)
+	auto frame = empty_frame_buf.getEmptyObj();
+
+	int error_code = avcodec_receive_frame(dec_context, frame.get()->getPointer());
+	
+	if (error_code == 0)
 	{
-		ret = false;
+		deced_frame_buf.push(frame);
+		ret = true;
+	}
+	else
+	{
 		if (error_code == AVERROR(EAGAIN))
 		{
 			//output is not available in the current state - user must try to send input
@@ -161,39 +158,9 @@ bool FrameDecoder::FillFrameBuf()
 			cout << "avcodec_receive_frame() fail: " << errorStr << endl;
 			exit(error_code);
 		}
-	}
-	else
-	{
-		recent_frame = frame;
-		deced_frame_buf.push(frame);
-		ret = true;
+		ret = false;
 	}
 
 	return ret;
 }
 
-void FrameDecoder::FlushContext()
-{
-	avcodec_send_packet(dec_context, NULL);
-	int ret;
-
-	while (true)
-	{
-		SharedAVFrame frame = MakeSharedAVStruct<AVFrame*>();
-		AVFrame* avfrm = frame.get()->getPointer();
-		ret = avcodec_receive_frame(dec_context, avfrm);
-		if (ret != 0)
-		{
-			if (ret == AVERROR_EOF)
-				break;
-			else
-			{
-				char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
-				av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, ret);
-				cout << "avcodec_receive_frame() fail: " << errorStr << endl;
-				exit(ret);
-			}
-		}
-		deced_frame_buf.push(frame);
-	}
-}

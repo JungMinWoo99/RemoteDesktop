@@ -3,8 +3,10 @@
 
 using namespace std;
 
-bool AllocAVFrameBuffer(AVFrame*& output_av, const AVCodecContext* c_context)
+bool AllocAVFrameBuf(AVFrame*& output_av, const AVCodecContext* c_context)
 {
+	av_frame_unref(output_av);
+
 	//settint option
 	output_av->width = c_context->width;
 	output_av->height = c_context->height;
@@ -13,13 +15,13 @@ bool AllocAVFrameBuffer(AVFrame*& output_av, const AVCodecContext* c_context)
 	output_av->linesize[1] = output_av->width / 2;
 	output_av->linesize[2] = output_av->width / 2;
 
-	int error_code = av_frame_get_buffer(output_av, 0);
-	if (error_code != 0)
+	int ret = av_frame_get_buffer(output_av, 0);
+	if (ret != 0)
 	{
 		char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
-		av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, error_code);
+		av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, ret);
 		cout << "av_frame_get_buffer fail: " << errorStr << endl;
-		exit(error_code);
+		exit(ret);
 	}
 
 	return true;
@@ -29,6 +31,7 @@ void CopyAVFrameToRaw(const AVFrame* src, std::shared_ptr<FrameData> dst)
 {
 	BYTE* frame_ptr = dst.get()->getMemPointer();
 	size_t frame_size = dst.get()->getMemSize();
+
 	memcpy(frame_ptr,
 		src->data[0],
 		frame_size * 2 / 3);

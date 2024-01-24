@@ -4,6 +4,7 @@
 #include "FramePacketizer/FrameEncoder.h"
 #include "FramePacketizer/AVFrameManage.h"
 #include "FramePacketizer/CoderThread/EncoderThread.h"
+#include "TestQueueMonitorThread.h"
 
 #include <iostream>
 
@@ -55,12 +56,16 @@ public:
 		avformat_free_context(*formatContext);
 	}
 
-	void PacketProcess(SharedAVPacket input) override
+	void PacketProcess(AVPacket* packet) override
 	{
-		AVPacket* packet = input.get()->getPointer();
 		packet->stream_index = (*outStream)->index;
-		if (av_interleaved_write_frame(*formatContext, packet) < 0)
-			cout << "av_interleaved_write_frame fail" << endl;
+		int ret = av_interleaved_write_frame(*formatContext, packet);
+		if (ret < 0) {
+			char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
+			av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, ret);
+			cout << "av_interleaved_write_frame fail: " << errorStr << endl;
+			exit(ret);
+		}
 	}
 
 	void EndEncoding()
@@ -76,13 +81,16 @@ private:
 
 int main(void)
 {
+	TestQueueMonitorThread monitor_thread(std::chrono::seconds(10));
+	monitor_thread.start();
+
 	int w, h;
 	w = DEFALUT_WIDTH;
 	h = DEFALUT_HEIGHT;
 
 	//프레임 버퍼 설정
 	ScreenDataBuffer screen_buf(5);
-	ScreenDataBuffer periodic_buf(1);
+	ScreenDataBuffer periodic_buf(10);
 	CaptureThread capture_obj(screen_buf);
 	PeriodicDataCollector clt_obj(screen_buf, periodic_buf);
 	FrameEncoder encoding_obj;
@@ -125,17 +133,19 @@ int main(void)
 	bool is_stream = true;
 	while (is_stream)
 	{
-		SharedAVFrame av_frame = MakeSharedAVStruct<AVFrame*>();
-		if (!AllocAVFrameBuffer(av_frame.get()->getPointer(), enc_codec_context))
+		while (!periodic_buf.SendFrameData(frame));
+		auto yuv_data = pix_fmt_cvt.ConvertBGRToYUV(frame);
+
+		shared_ptr<SharedAVFrame> frame_obj = AVStructPool<AVFrame*>::getInstance().getEmptyObj();
+		AVFrame* av_frame = frame_obj.get()->getPointer();
+		if (!AllocAVFrameBuf(av_frame, enc_codec_context))
 		{
-			cout << "AllocAVFrameBuffer fail" << endl;
+			cout << "AllocAVFrameBuf fail" << endl;
 			return -1;
 		}
-		AllocAVFrameBuffer(av_frame.get()->getPointer(), encoding_obj.getEncCodecContext());
-		while (!periodic_buf.SendFrameData(frame));
-		CopyRawToAVFrame(pix_fmt_cvt.ConvertBGRToYUV(frame), av_frame.get()->getPointer());
-		enc_thr.InputFrame(av_frame);
-		//cout << "remain frame:" << FrameData::getRemainFrame() <<" remain packet:"<<encoding_obj.getRemainPacketNum() << endl;
+		
+		CopyRawToAVFrame(yuv_data, av_frame);
+		enc_thr.InputFrame(frame_obj);
 	}
 
 	pkt_thr.EndHandle();
@@ -144,6 +154,8 @@ int main(void)
 	capture_obj.EndCapture();
 
 	avformat_free_context(formatContext);
+
+	monitor_thread.stop();
 
 	return 0;
 }
