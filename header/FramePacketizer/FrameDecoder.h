@@ -7,12 +7,15 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
+#include <fstream>
+#include<memory>
+
+
 #include "Constant/VideoConstants.h"
 #include "ScreenCapture/FrameData.h"
 #include "MutexQueue/MutexQueue.h"
 #include "FramePacketizer/AVStructPool.h"
 
-#include<memory>
 
 class FrameDecoder
 {
@@ -32,6 +35,8 @@ public:
 	~FrameDecoder();
 private:
 	_Check_return_ bool FillFrameBuf();
+
+	static std::ofstream log_stream;
 
 	const AVCodec* dec_codec;
 	AVCodecContext* dec_context;

@@ -15,6 +15,7 @@ extern "C" {
 #include<queue>
 #include<memory>
 #include<mutex>
+#include <fstream>
 
 class FrameEncoder
 {
@@ -37,6 +38,8 @@ public:
 
 private:
 	_Check_return_ bool FillPacketBuf();
+
+	static std::ofstream log_stream;
 
 	const AVCodec* enc_codec;
 	AVCodecContext* enc_context;

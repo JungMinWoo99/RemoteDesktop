@@ -24,9 +24,6 @@
     <ClCompile Include="..\src\FramePacketizer\FrameEncoder.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\FramePacketizer\PixFmtConverter.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="FrameEncoderTest.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
@@ -63,9 +60,6 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\header\FramePacketizer\FrameEncoder.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\FramePacketizer\PixFmtConverter.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\header\FramePacketizer\AVFrameManage.h">

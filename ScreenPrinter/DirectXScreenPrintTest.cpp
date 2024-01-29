@@ -1,6 +1,6 @@
 #include "ScreenCapture/WinScreenCapture.h"
 #include "Constant/VideoConstants.h"
-#include "ScreenPrinter/WinScreenPrinter.h"
+#include "ScreenPrinter/DirectXScreenPrinter.h"
 
 int main(void)
 {
@@ -9,7 +9,7 @@ int main(void)
 	h = DEFALUT_HEIGHT;
 	std::shared_ptr<FrameData> current_frame;
 	WinScreenCapture capture_obj;
-	WinScreenPrinter screen_print(w, h, capture_obj.getBMI(), current_frame);
+	DirectXScreenPrinter screen_print(w, h, current_frame);
 
 	bool is_cap = true;
 	auto cap_func = [&]() {

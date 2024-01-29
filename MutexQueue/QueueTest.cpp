@@ -5,7 +5,7 @@
 #include <chrono>
 
 int main() {
-    MutexQueue<int> myQueue;
+    MutexQueue<int> myQueue("TestQueue");
 
     myQueue.push(42);
 

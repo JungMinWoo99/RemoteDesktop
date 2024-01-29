@@ -1,6 +1,7 @@
 #pragma once
 
 #include <Windows.h>
+#include <chrono>
 
 class FrameData
 {
@@ -15,9 +16,13 @@ public:
 
 	size_t getMemSize();
 
-	void setCaptureTime(int pts);
+	void setCaptureTime(std::chrono::nanoseconds captured_time);
 
-	int getCaptureTime();
+	std::chrono::nanoseconds getCaptureTime();
+
+	void setPts(unsigned int pts);
+
+	unsigned int getPts();
 
 	~FrameData();
 private:
@@ -26,5 +31,6 @@ private:
 	BYTE* mem;
 	size_t mem_size;
 
-	int capture_time_ms;
+	std::chrono::nanoseconds captured_time;//Elapsed Time Since Program Start
+	unsigned int pts;
 };

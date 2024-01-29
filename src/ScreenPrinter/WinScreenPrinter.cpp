@@ -2,7 +2,7 @@
 
 using namespace std;
 
-LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+LRESULT CALLBACK WinScreenPrinterWndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	switch (message)
 	{
@@ -19,7 +19,7 @@ WinScreenPrinter::WinScreenPrinter(int width, int height, const BITMAPINFO& bmi,
 {
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.style = CS_HREDRAW | CS_VREDRAW;
-	wc.lpfnWndProc = WndProc;
+	wc.lpfnWndProc = WinScreenPrinterWndProc;
 	wc.hInstance = GetModuleHandle(NULL);
 	wc.hCursor = LoadCursor(NULL, IDC_ARROW);
 	wc.hbrBackground = (HBRUSH)(COLOR_WINDOW + 1);
@@ -53,6 +53,7 @@ void WinScreenPrinter::PrintFrame(shared_ptr<FrameData> frame)
 {
 	SetDIBitsToDevice(mainDC, 0, 0, w, h, 0, 0, 0, h, frame.get()->getMemPointer(), &bmi, DIB_RGB_COLORS);
 	UpdateWindow(_main);
+	Sleep(4);
 }
 
 void WinScreenPrinter::PrintFunc()

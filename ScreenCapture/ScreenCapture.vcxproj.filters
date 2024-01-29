@@ -16,9 +16,12 @@
     <Filter Include="TestCode">
       <UniqueIdentifier>{b8ff0077-5d6b-4ad0-860b-323e10682926}</UniqueIdentifier>
     </Filter>
+    <Filter Include="ExternCode">
+      <UniqueIdentifier>{f45c4248-95b6-4906-a100-a6617da16a34}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="ScreenCaptureTest.cpp">
+    <ClCompile Include="WinScreenCaptureTest.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
     <ClCompile Include="ScreenDataBufferTest.cpp">
@@ -33,6 +36,21 @@
     <ClCompile Include="..\src\ScreenCapture\ScreenDataBuffer.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\ScreenCapture\WinScreenCapture.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ScreenCapture\DirectXScreenCapture.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\header\ExternCode\DXGIManager\DXGIManager.cpp">
+      <Filter>ExternCode</Filter>
+    </ClCompile>
+    <ClCompile Include="DirectXScreenCaptureTest.cpp">
+      <Filter>TestCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\ScreenCapture\PixFmtConverter.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\ScreenCapture\FrameData.h">
@@ -42,6 +60,18 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\header\ScreenCapture\ScreenDataBuffer.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\ScreenCapture\WinScreenCapture.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\ScreenCapture\DirectXScreenCapture.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\ExternCode\DXGIManager\DXGIManager.h">
+      <Filter>ExternCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\ScreenCapture\PixFmtConverter.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

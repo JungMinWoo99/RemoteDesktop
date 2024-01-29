@@ -1,3 +1,5 @@
+#pragma deprecated("This header is deprecated, and its use is discouraged.")
+
 #pragma once
 
 #include <queue>

@@ -146,23 +146,35 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\header\ExternCode\DXGIManager\DXGIManager.cpp" />
+    <ClCompile Include="..\src\ScreenCapture\DirectXScreenCapture.cpp" />
     <ClCompile Include="..\src\ScreenCapture\FrameData.cpp" />
+    <ClCompile Include="..\src\ScreenCapture\PixFmtConverter.cpp" />
     <ClCompile Include="..\src\ScreenCapture\ScreenCapture.cpp" />
     <ClCompile Include="..\src\ScreenCapture\ScreenDataBuffer.cpp" />
+    <ClCompile Include="..\src\ScreenCapture\WinScreenCapture.cpp" />
+    <ClCompile Include="DirectXScreenCaptureTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="ScreenDataBufferTest.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
     </ClCompile>
-    <ClCompile Include="ScreenCaptureTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    <ClCompile Include="WinScreenCaptureTest.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\header\ExternCode\DXGIManager\DXGIManager.h" />
+    <ClInclude Include="..\header\ScreenCapture\DirectXScreenCapture.h" />
     <ClInclude Include="..\header\ScreenCapture\FrameData.h" />
+    <ClInclude Include="..\header\ScreenCapture\PixFmtConverter.h" />
     <ClInclude Include="..\header\ScreenCapture\ScreenCapture.h" />
     <ClInclude Include="..\header\ScreenCapture\ScreenDataBuffer.h" />
+    <ClInclude Include="..\header\ScreenCapture\WinScreenCapture.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -4,6 +4,7 @@
 #include <queue>
 #include <vector>
 #include <iostream>
+#include <fstream>
 
 class MutexQueueMonitor;
 
@@ -17,7 +18,6 @@ template <typename T>
 class MutexQueue : public MonitorableQueue
 {
 public:
-	
 
 	MutexQueue(std::string queue_name)
 	{
@@ -86,16 +86,19 @@ public:
 	void PrintQueueList() const
 	{
 		static int print_count = 0;
-		std::cout << ++print_count << "th queue status report" << std::endl;
+
+		log_stream << ++print_count << "th queue status report" << std::endl;
 		for (std::pair< MonitorableQueue*, std::string> queue_info : queue_info_list)
 		{
-			std::cout << queue_info.second << " size: " << queue_info.first->size() << std::endl;
+			log_stream << queue_info.second << " size: " << queue_info.first->size() << std::endl;
 		}
 	}
 
 private:
 	static std::unique_ptr<MutexQueueMonitor> instance;
 	static std::once_flag initFlag;
+
+	static std::ofstream log_stream;
 
 	static void initInstance() 
 	{

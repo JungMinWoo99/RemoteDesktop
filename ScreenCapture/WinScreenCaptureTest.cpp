@@ -1,4 +1,4 @@
-#include "ScreenCapture/ScreenCapture.h"
+#include "ScreenCapture/WinScreenCapture.h"
 #include "Constant/VideoConstants.h"
 #include <thread>
 
@@ -37,7 +37,7 @@ int main(void)
 
 	HDC mainDC = GetDC(_main);
 	ShowWindow(_main, SW_SHOWNORMAL);
-	ScreenCapture capture_obj(w, h);
+	WinScreenCapture capture_obj;
 
 	while (true)
 	{

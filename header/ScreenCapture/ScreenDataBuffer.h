@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 #include "ScreenCapture/FrameData.h"
 #include "Constant/VideoConstants.h"
 #include "MutexQueue/MutexQueue.h"
@@ -9,7 +11,7 @@ class ScreenDataBuffer
 {
 public:
 
-	ScreenDataBuffer(unsigned int buf_size);
+	ScreenDataBuffer(unsigned int buf_size, std::string buf_name);
 
 	void RecvFrameData(std::shared_ptr<FrameData> frame);
 

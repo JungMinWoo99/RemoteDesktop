@@ -6,7 +6,7 @@
 class PeriodicDataCollector
 {
 public:
-	PeriodicDataCollector(ScreenDataBuffer& input_buf, ScreenDataBuffer& output_buf, int collect_rate = DEFALUT_FRAME_RATE);
+	PeriodicDataCollector(ScreenDataBuffer& input_buf, ScreenDataBuffer& output_buf, unsigned int collect_rate = DEFALUT_FRAME_RATE);
 
 	void StartCollect();
 
@@ -19,7 +19,7 @@ private:
 
 	std::thread clt_thread;
 
-	int collect_rate;
+	unsigned int collect_rate;
 
 	bool collect_continue = false;
 

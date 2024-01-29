@@ -2,8 +2,8 @@
 
 using namespace std;
 
-CaptureThread::CaptureThread(ScreenDataBuffer& data_buf):
-	data_buf(data_buf), capture_obj()
+CaptureThread::CaptureThread(ScreenDataBuffer& data_buf, ScreenCapture* capture_obj):
+	data_buf(data_buf), capture_obj(capture_obj)
 {
 }
 
@@ -19,7 +19,7 @@ void CaptureThread::EndCapture()
 	cap_thread.join();
 }
 
-const ScreenCapture& CaptureThread::getCapInfo()
+const ScreenCapture* CaptureThread::getCapInfo()
 {
 	return capture_obj;
 }
@@ -33,7 +33,7 @@ void CaptureThread::CaptureFunc()
 {
 	while (capture_continue)
 	{
-		auto frame = capture_obj.CaptureCurrentScreen();
+		auto frame = capture_obj->CaptureCurrentScreen();
 		data_buf.RecvFrameData(frame);
 	}
 }

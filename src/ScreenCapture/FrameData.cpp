@@ -4,19 +4,21 @@
 int FrameData::remain = 0;
 
 FrameData::FrameData(int alloc_size)
+	: captured_time()
 {
 	remain++;
 	mem = (BYTE*)malloc(alloc_size);
 	mem_size = alloc_size;
-	capture_time_ms = -1;
+	pts = 0;
 }
 
 FrameData::FrameData(BYTE* mem_ptr, int alloc_size)
+	: captured_time()
 {
 	remain++;
 	mem = mem_ptr;
 	mem_size = alloc_size;
-	capture_time_ms = -1;
+	pts = 0;
 }
 
 BYTE* FrameData::getMemPointer()
@@ -29,14 +31,24 @@ size_t FrameData::getMemSize()
 	return mem_size;
 }
 
-void FrameData::setCaptureTime(int pts)
+void FrameData::setCaptureTime(std::chrono::nanoseconds captured_time)
 {
-	this->capture_time_ms = pts;
+	this->captured_time = captured_time;
 }
 
-int FrameData::getCaptureTime()
+std::chrono::nanoseconds FrameData::getCaptureTime()
 {
-	return capture_time_ms;
+	return captured_time;
+}
+
+void FrameData::setPts(unsigned int pts)
+{
+	this->pts = pts;
+}
+
+unsigned int FrameData::getPts()
+{
+	return pts;
 }
 
 int FrameData::getRemainFrame()

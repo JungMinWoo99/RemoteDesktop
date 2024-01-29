@@ -12,9 +12,9 @@ class ScreenCapture
 {
 public:
 
-	ScreenCapture(int pixel_width = DEFALUT_WIDTH, int pixel_height = DEFALUT_HEIGHT);
+	ScreenCapture(int color_bits = BYTE_PER_PIXEL, int pixel_width = DEFALUT_WIDTH, int pixel_height = DEFALUT_HEIGHT);
 
-	std::shared_ptr<FrameData> CaptureCurrentScreen();
+	virtual std::shared_ptr<FrameData> CaptureCurrentScreen() = 0;
 
 	int getWidth() const;
 
@@ -22,19 +22,11 @@ public:
 
 	int getFrameDataSize() const;
 
-	const BITMAPINFO& getBMI() const;
+	virtual ~ScreenCapture();
 
-	~ScreenCapture();
+protected:
 
-private:
-
-	HDC screenDC;
-	HDC memDC;
-	HBITMAP screenHBM;
-
-	BITMAPINFO buf_bmi;
-
-	std::mutex mtx;
+	std::mutex cap_mtx;
 
 	int pixel_width;
 	int pixel_height;
@@ -43,5 +35,4 @@ private:
 
 	int obj_id;
 
-	static BOOL CALLBACK MonitorProc(HMONITOR hMon, HDC hDC, LPRECT pRect, LPARAM LParam);
 };

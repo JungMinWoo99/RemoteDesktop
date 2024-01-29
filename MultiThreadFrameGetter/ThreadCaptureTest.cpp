@@ -1,6 +1,7 @@
 #include "MultiThreadFrameGetter/CaptureThread.h"
 #include "ScreenPrinter/WinScreenPrinter.h"
-
+#include "ScreenCapture/DirectXScreenCapture.h"
+#include "ScreenCapture/WinScreenCapture.h"
 #include <iostream>
 
 #define TEST_NUM 0
@@ -12,13 +13,14 @@ int main(void)
 	h = DEFALUT_HEIGHT;
 	frame_per_sec = DEFALUT_FRAME_RATE;
 
-	ScreenDataBuffer screen_buf(60);
-	//MultiThreadCapture capture_obj(screen_buf);
-	CaptureThread capture_obj2(screen_buf);
+	ScreenDataBuffer screen_buf(60,"");
+	DirectXScreenCapture capture_obj;
+	WinScreenCapture tem;
+	CaptureThread capture_thread(screen_buf, &capture_obj);
 	std::shared_ptr<FrameData> buf;
-	WinScreenPrinter screen_printer(w, h, capture_obj2.getCapInfo().getBMI(), buf);
+	WinScreenPrinter screen_printer(w, h, tem.getBMI(), buf);
 
-	capture_obj2.StartCapture();
+	capture_thread.StartCapture();
 	
 	if (TEST_NUM == 0)
 	{
@@ -51,7 +53,7 @@ int main(void)
 		screen_printer.EndPrint();
 	}
 	
-	capture_obj2.EndCapture();
+	capture_thread.EndCapture();
 
 	return 0;
 }

@@ -19,7 +19,7 @@ extern "C" {
 class PixFmtConverter
 {
 public:
-	PixFmtConverter(int width = DEFALUT_WIDTH, int height = DEFALUT_HEIGHT, bool flip_data = true);
+	PixFmtConverter(int width = DEFALUT_WIDTH, int height = DEFALUT_HEIGHT);
 
 	std::shared_ptr<FrameData> ConvertBGRToYUV(std::shared_ptr<FrameData> bgr_data);
 	std::shared_ptr<FrameData> ConvertYUVToBGR(std::shared_ptr<FrameData> yuv_data);
@@ -34,8 +34,6 @@ private:
 
 	int bgr_stride[1];
 	int yuv_stride[3];
-
-	bool flip_data;
 
 	void FlipData(std::shared_ptr<FrameData> yuv_frame_data);
 };

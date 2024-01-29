@@ -1,10 +1,10 @@
-﻿#include "FramePacketizer/PixFmtConverter.h"
+﻿#include "ScreenCapture/PixFmtConverter.h"
 #include <iostream>
 
 using namespace std;
 
-PixFmtConverter::PixFmtConverter(int width, int height, bool flip_data)
-	:frame_width(width), frame_height(height), flip_data(flip_data)
+PixFmtConverter::PixFmtConverter(int width, int height)
+	:frame_width(width), frame_height(height)
 {
 	AVPixelFormat bgr_pix_fmt = AV_PIX_FMT_RGB32;
 
@@ -25,16 +25,13 @@ PixFmtConverter::PixFmtConverter(int width, int height, bool flip_data)
 		SWS_BICUBIC, nullptr, nullptr, nullptr);
 
 	if (rgb_to_yuv_ctx == NULL || yuv_to_bgr_ctx == NULL) {
-		cerr << "sws_getContext fail" << endl;
+		cout << "sws_getContext fail" << endl;
 		exit(-1);
 	}
 }
 
 shared_ptr<FrameData> PixFmtConverter::ConvertBGRToYUV(shared_ptr<FrameData> bgr_data)
 {
-	if (flip_data)
-		FlipData(bgr_data);
-
 	shared_ptr<FrameData> yuv_data = make_shared<FrameData>(bgr_data.get()->getMemSize() / 2 * 3 / BYTE_PER_PIXEL);
 	yuv_data.get()->setCaptureTime(bgr_data.get()->getCaptureTime());
 
@@ -64,9 +61,6 @@ shared_ptr<FrameData> PixFmtConverter::ConvertYUVToBGR(shared_ptr<FrameData> yuv
 	uint8_t* bgr_data_ptr[1] = { bgr_data.get()->getMemPointer() };
 
 	sws_scale(yuv_to_bgr_ctx, yuv_data_ptr, yuv_stride, 0, frame_height, bgr_data_ptr, bgr_stride);
-
-	if (flip_data)
-		FlipData(bgr_data);
 
 	return bgr_data;
 }

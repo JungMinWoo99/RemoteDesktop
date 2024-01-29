@@ -45,7 +45,7 @@ void CopyAVFrameToRaw(const AVFrame* src, std::shared_ptr<FrameData> dst)
 
 void CopyRawToAVFrame(const std::shared_ptr<FrameData> src, AVFrame* dst)
 {
-	dst->pts = src.get()->getCaptureTime();
+	dst->pts = src.get()->getPts();
 
 	//copy raw data
 	BYTE* frame_ptr = src.get()->getMemPointer();

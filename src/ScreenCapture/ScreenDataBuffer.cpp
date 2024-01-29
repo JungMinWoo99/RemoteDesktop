@@ -2,8 +2,8 @@
 
 using namespace std;
 
-ScreenDataBuffer::ScreenDataBuffer(unsigned int buf_size)
-	: max_buf_size(buf_size), mem_buf("ScreenDataBuffer")
+ScreenDataBuffer::ScreenDataBuffer(unsigned int buf_size, string buf_name)
+	: max_buf_size(buf_size), mem_buf(buf_name.c_str())
 {
 }
 

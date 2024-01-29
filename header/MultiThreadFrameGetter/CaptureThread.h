@@ -8,18 +8,18 @@
 class CaptureThread 
 {
 public:
-	CaptureThread(ScreenDataBuffer& data_buf);
+	CaptureThread(ScreenDataBuffer& data_buf, ScreenCapture* capture_obj);
 
 	void StartCapture();
 
 	void EndCapture();
 
-	const ScreenCapture& getCapInfo();
+	const ScreenCapture* getCapInfo();
 
 	ScreenDataBuffer& getDataBuf();
 
 private:
-	ScreenCapture capture_obj;
+	ScreenCapture* capture_obj;
 
 	ScreenDataBuffer& data_buf;
 

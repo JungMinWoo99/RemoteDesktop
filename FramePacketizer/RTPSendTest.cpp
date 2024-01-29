@@ -1,10 +1,11 @@
 #include "MultiThreadFrameGetter/CaptureThread.h"
 #include "MultiThreadFrameGetter/PeriodicDataCollector.h"
-#include "FramePacketizer/PixFmtConverter.h"
+#include "ScreenCapture/PixFmtConverter.h"
 #include "FramePacketizer/FrameEncoder.h"
 #include "FramePacketizer/AVFrameManage.h"
 #include "FramePacketizer/CoderThread/EncoderThread.h"
 #include "TestQueueMonitorThread.h"
+#include "ScreenCapture/DirectXScreenCapture.h"
 
 #include <iostream>
 
@@ -88,10 +89,12 @@ int main(void)
 	w = DEFALUT_WIDTH;
 	h = DEFALUT_HEIGHT;
 
+	DirectXScreenCapture* cap_obj = new DirectXScreenCapture();
+
 	//프레임 버퍼 설정
-	ScreenDataBuffer screen_buf(5);
-	ScreenDataBuffer periodic_buf(10);
-	CaptureThread capture_obj(screen_buf);
+	ScreenDataBuffer screen_buf(5,"Screen Frame Source Buffer");
+	ScreenDataBuffer periodic_buf(10, "Screen Frame Collect Buffer");
+	CaptureThread capture_obj(screen_buf, cap_obj);
 	PeriodicDataCollector clt_obj(screen_buf, periodic_buf);
 	FrameEncoder encoding_obj;
 	PixFmtConverter pix_fmt_cvt;

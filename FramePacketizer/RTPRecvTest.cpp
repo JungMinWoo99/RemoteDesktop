@@ -1,10 +1,11 @@
 #include "MultiThreadFrameGetter/CaptureThread.h"
 #include "MultiThreadFrameGetter/PeriodicDataCollector.h"
-#include "FramePacketizer/PixFmtConverter.h"
+#include "ScreenCapture/PixFmtConverter.h"
 #include "FramePacketizer/FrameDecoder.h"
 #include "FramePacketizer/AVFrameManage.h"
 #include "FramePacketizer/CoderThread/DecoderThread.h"
 #include "ScreenPrinter/WinScreenPrinter.h"
+#include "ScreenCapture/WinScreenCapture.h"
 
 #include <iostream>
 
@@ -47,16 +48,16 @@ public:
 		}
 
 		if (videoStreamIndex == -1)
-			fprintf(stderr, "Cannot find video stream\n");
+			cout << "Cannot find video stream" << endl;
 		
 		const AVCodec* codec = NULL;
 		codec = avcodec_find_decoder((*formatContext)->streams[videoStreamIndex]->codecpar->codec_id);
 		if (!codec) 
-			fprintf(stderr, "Cannot find decoder avcodec\n");
+			cout << "Cannot find decoder avcodec" << endl;
 		
 
-		if (avcodec_open2(*dec_codec_context, codec, NULL) < 0) 
-			fprintf(stderr, "Cannot open codec\n");
+		if (avcodec_open2(*dec_codec_context, codec, NULL) < 0)
+			cout << "Cannot open codec" << endl;
 
 		yuv_frame_data = make_shared<FrameData>(DEFALUT_WIDTH * DEFALUT_HEIGHT * 4 / 2 * 3 / 4);
 		s_printer.StartPrint();
@@ -90,68 +91,10 @@ private:
 
 
 int main() {
-	// AVFormatContext 생성
-	/*
-	
-
-	const AVInputFormat* format = av_find_input_format("sdp");
-	AVDictionary* formatOpts = nullptr;
-	av_dict_set(&formatOpts, "protocol_whitelist", "file,udp,rtp", 0);
-	*/
-
-	// 파일 열기
-	/*
-	if (avformat_open_input(&formatContext, STREAM_ADDR_STR, format, &formatOpts) != 0) {
-		fprintf(stderr, "avformat_open_input fail\n");
-		return -1;
-	}
-	else
-		cout << "avformat_open_input done" << endl;
-
-	// 파일 정보 가져오기
-	if (avformat_find_stream_info(formatContext, NULL) < 0) {
-		fprintf(stderr, "Cannot find stream information\n");
-		return -1;
-	}
-	else
-		cout << "avformat_find_stream_info done" << endl;
-
-	// 비디오 스트림 인덱스 찾기
-	int videoStreamIndex = -1;
-	for (int i = 0; i < formatContext->nb_streams; i++) {
-		if (formatContext->streams[i]->codecpar->codec_type == AVMEDIA_TYPE_VIDEO) {
-			videoStreamIndex = i;
-			break;
-		}
-	}
-
-	if (videoStreamIndex == -1) {
-		fprintf(stderr, "Cannot find video stream\n");
-		return -1;
-	}
-	*/
-
-	// set codec
-	/*
-	const AVCodec* codec = NULL;
-	codec = avcodec_find_decoder(formatContext->streams[videoStreamIndex]->codecpar->codec_id);
-	if (!codec) {
-		fprintf(stderr, "Cannot find decoder avcodec\n");
-		return -1;
-	}
-
-	if (avcodec_open2(CodecContext, codec, NULL) < 0) {
-		fprintf(stderr, "Cannot open codec\n");
-		return -1;
-	}
-	*/
-
-	
-
 	//디코드 및 출력
 	AVFormatContext* formatContext=nullptr;
 	AVCodecContext* dec_codec_context= nullptr;
-	ScreenCapture capture_obj(DEFALUT_WIDTH, DEFALUT_HEIGHT);
+	WinScreenCapture capture_obj;
 	FrameDecoder decoding_obj;
 	RTPFrameProcessor prc_obj(&formatContext, &dec_codec_context, capture_obj.getBMI());
 	AVFrameHandlerThread frm_thr(decoding_obj, prc_obj);
@@ -162,19 +105,6 @@ int main() {
 	//Decoding thread set
 	dec_thr.StartDecoding();
 	frm_thr.StartHandle();
-	/*
-	bool is_decoding = true;
-	auto decoding_func = [&]() {
-		while(is_decoding)
-		{
-			if(av_read_frame(formatContext, packet)<0)
-				continue;
-			decoder.DecodePacket(packet);
-			//av_packet_unref(packet);
-			//Sleep(10);
-		}
-		};
-	*/
 
 	auto packet = AVStructPool<AVPacket*>::getInstance().getEmptyObj();
 
