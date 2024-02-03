@@ -1,0 +1,137 @@
+1th queue status report
+2th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 1
+3th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 1
+4th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 1
+5th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 1
+6th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 2
+7th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 2
+8th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 1
+9th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 2
+10th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 2
+11th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 2
+12th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 2
+13th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 2
+14th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 2
+15th queue status report
+EncodedPacketFramedSource size: 1
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 2
+16th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 2
+17th queue status report
+EncodedPacketFramedSource size: 0
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 2
+18th queue status report
+EncodedPacketFramedSource size: 238
+Screen Frame Source Buffer size: 0
+Screen Frame Collect Buffer size: 0
+AVStructPool size: 2
+FrameEncoder size: 0
+FrameEncoderThread size: 0
+AVStructPool size: 2

@@ -1,5 +1,6 @@
 #pragma once
 
+#define RECOMMAND_BIT_RATE 5500
 #define DEFALUT_WIDTH 1920
 #define DEFALUT_HEIGHT 1080
 

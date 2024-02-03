@@ -54,6 +54,12 @@
     <ClCompile Include="..\src\FramePacketizer\AVStructPool.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\FramePacketizer\AVPacketManage.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\FramePacketizer\PacketData.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\FramePacketizer\FrameDecoder.h">
@@ -76,6 +82,12 @@
     </ClInclude>
     <ClInclude Include="TestQueueMonitorThread.h">
       <Filter>TestCode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\FramePacketizer\AVPacketManage.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\FramePacketizer\PacketData.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

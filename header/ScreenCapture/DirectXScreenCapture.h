@@ -1,5 +1,10 @@
 #pragma once
 
+/*
+   This code was written with reference to the following source.
+   source: https://www.sysnet.pe.kr/2/0/11385
+*/
+
 #include <string>
 #include <fstream>
 

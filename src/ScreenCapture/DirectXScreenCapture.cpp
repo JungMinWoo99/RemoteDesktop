@@ -4,11 +4,6 @@
 #include <chrono>
 #include <format>
 
-/*
-   This code was written with reference to the following source.
-   source: https://www.sysnet.pe.kr/2/0/11385
-*/
-
 using namespace std;
 
 DirectXScreenCapture::DirectXScreenCapture()

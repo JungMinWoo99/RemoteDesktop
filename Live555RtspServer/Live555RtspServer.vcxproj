@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{7190b395-6f60-468f-ad8d-c939e8a9bb38}</ProjectGuid>
-    <RootNamespace>ScreenPrinter</RootNamespace>
+    <ProjectGuid>{0f8cbef3-f4ab-4468-9826-72303f79e528}</ProjectGuid>
+    <RootNamespace>Live555RtspServer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -55,7 +55,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>WinScreenCapture.obj;ScreenCapture.obj;FrameData.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FrameData.obj;PacketData.obj;MutexQueue.obj;EncoderThread.obj;ScreenCapture.obj;ScreenDataBuffer.obj;PeriodicDataCollector.obj;PixFmtConverter.obj;DirectXScreenCapture.obj;DXGIManager.obj;FrameEncoder.obj;AVStructPool.obj;CaptureThread.obj;AVPacketManage.obj;AVFrameManage.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -72,29 +72,20 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>FrameData.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FrameData.obj;PacketData.obj;MutexQueue.obj;EncoderThread.obj;ScreenCapture.obj;ScreenDataBuffer.obj;PeriodicDataCollector.obj;PixFmtConverter.obj;DirectXScreenCapture.obj;DXGIManager.obj;FrameEncoder.obj;AVStructPool.obj;CaptureThread.obj;AVPacketManage.obj;AVFrameManage.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\ScreenPrinter\DirectXScreenPrinter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="..\src\ScreenPrinter\WinScreenPrinter.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="DirectXScreenPrintTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="WinScreenPrintTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\src\Live555RtspServer\CaptureMediaSubsession.cpp" />
+    <ClCompile Include="..\src\Live555RtspServer\EncodedPacketFramedSource.cpp" />
+    <ClCompile Include="..\src\Live555RtspServer\RtspServerContext.cpp" />
+    <ClCompile Include="TestServ.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\header\ScreenPrinter\DirectXScreenPrinter.h" />
-    <ClInclude Include="..\header\ScreenPrinter\ScreenPrinter.h" />
-    <ClInclude Include="..\header\ScreenPrinter\WinScreenPrinter.h" />
+    <ClInclude Include="..\header\Live555RtspServer\CaptureMediaSubsession.h" />
+    <ClInclude Include="..\header\Live555RtspServer\EncodedPacketFramedSource.h" />
+    <ClInclude Include="..\header\Live555RtspServer\RtspServerContext.h" />
+    <ClInclude Include="TestQueueMonitorThread.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

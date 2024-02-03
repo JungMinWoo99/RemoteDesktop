@@ -37,8 +37,10 @@ FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 	enc_context->framerate = { frame_rate, 1 };
 	enc_context->gop_size = GOP_SIZE;
 	enc_context->pix_fmt = DEFALUT_PIX_FMT;
-
+	enc_context->bit_rate = RECOMMAND_BIT_RATE;
+	enc_context->max_b_frames = 0; // no b frame
 	enc_context->codec_type = AVMEDIA_TYPE_VIDEO;
+	enc_context->flags |= AV_CODEC_FLAG_QSCALE;
 	enc_context->rc_buffer_size = enc_context->rc_max_rate;
 
 	int error_code;
