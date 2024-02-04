@@ -4,6 +4,7 @@
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
 RtspServerExample/
+video-sdk-samples-master/
 
 # User-specific files
 *.rsuser
@@ -11,6 +12,8 @@ RtspServerExample/
 *.user
 *.userosscache
 *.sln.docstates
+*.txt
+*.log
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs

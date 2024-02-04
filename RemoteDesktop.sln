@@ -37,6 +37,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Live555RtspServer", "Live55
 		{645BC3DE-FEA4-4A34-8B9C-A7C774132519} = {645BC3DE-FEA4-4A34-8B9C-A7C774132519}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "ResourceMonitor", "ResourceMonitor\ResourceMonitor.vcxproj", "{9B335A31-996C-4120-9CCB-4ECEF5096712}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -98,6 +100,12 @@ Global
 		{0F8CBEF3-F4AB-4468-9826-72303F79E528}.Release|x64.Build.0 = Release|x64
 		{0F8CBEF3-F4AB-4468-9826-72303F79E528}.Release|x86.ActiveCfg = Release|Win32
 		{0F8CBEF3-F4AB-4468-9826-72303F79E528}.Release|x86.Build.0 = Release|Win32
+		{9B335A31-996C-4120-9CCB-4ECEF5096712}.Debug|x64.ActiveCfg = Debug|x64
+		{9B335A31-996C-4120-9CCB-4ECEF5096712}.Debug|x64.Build.0 = Debug|x64
+		{9B335A31-996C-4120-9CCB-4ECEF5096712}.Debug|x86.ActiveCfg = Debug|x64
+		{9B335A31-996C-4120-9CCB-4ECEF5096712}.Release|x64.ActiveCfg = Release|x64
+		{9B335A31-996C-4120-9CCB-4ECEF5096712}.Release|x64.Build.0 = Release|x64
+		{9B335A31-996C-4120-9CCB-4ECEF5096712}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

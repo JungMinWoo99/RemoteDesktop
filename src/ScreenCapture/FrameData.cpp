@@ -1,12 +1,9 @@
 #include "Constant/VideoConstants.h"
 #include "ScreenCapture/Framedata.h"
 
-int FrameData::remain = 0;
-
 FrameData::FrameData(int alloc_size)
 	: captured_time()
 {
-	remain++;
 	mem = (BYTE*)malloc(alloc_size);
 	mem_size = alloc_size;
 	pts = 0;
@@ -15,7 +12,6 @@ FrameData::FrameData(int alloc_size)
 FrameData::FrameData(BYTE* mem_ptr, int alloc_size)
 	: captured_time()
 {
-	remain++;
 	mem = mem_ptr;
 	mem_size = alloc_size;
 	pts = 0;
@@ -51,14 +47,7 @@ unsigned int FrameData::getPts()
 	return pts;
 }
 
-int FrameData::getRemainFrame()
-{
-	return remain;
-}
-
 FrameData::~FrameData()
 {
-	remain--;
-
 	free(mem);
 }

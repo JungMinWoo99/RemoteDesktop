@@ -6,6 +6,7 @@ extern "C" {
 }
 
 #include "MutexQueue/MutexQueue.h"
+#include "ResourceMonitor/CountableResource.h"
 
 #include <memory>
 
@@ -72,7 +73,7 @@ template <class T>
 std::once_flag AVStructPool<T>::initFlag;
 
 template <typename T>
-class SharedAVStruct
+class SharedAVStruct: public CountableResource<SharedAVStruct<T>>
 {
 	friend class AVStructPool<T>;
 public:

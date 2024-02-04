@@ -53,6 +53,10 @@ shared_ptr<FrameData> DirectXScreenCapture::CaptureCurrentScreen()
 	chrono::steady_clock::time_point cap_tp = chrono::steady_clock::now();
 
 	auto ret = Capture(rcDim, pixel_data_buf.get()->getMemPointer(), spWICFactory);
+	chrono::nanoseconds captured_time = cap_tp - start_tp;
+	if(prev_frame!=nullptr)
+		log_stream << "cap term: " << (captured_time - prev_frame.get()->getCaptureTime()).count() / 1000000 << "ms" << endl;
+
 	if (ret != 0)
 	{
 		if (ret == DXGI_ERROR_WAIT_TIMEOUT)
@@ -67,7 +71,6 @@ shared_ptr<FrameData> DirectXScreenCapture::CaptureCurrentScreen()
 	else
 		prev_frame = pixel_data_buf;
 
-	chrono::nanoseconds captured_time = cap_tp - start_tp;
 	pixel_data_buf.get()->setCaptureTime(captured_time);
 
 	cap_mtx.unlock();

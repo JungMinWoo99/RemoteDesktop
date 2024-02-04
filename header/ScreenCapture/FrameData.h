@@ -1,13 +1,13 @@
 #pragma once
 
+#include "ResourceMonitor/CountableResource.h"
+
 #include <Windows.h>
 #include <chrono>
 
-class FrameData
+class FrameData: public CountableResource<FrameData>
 {
 public:
-	static int getRemainFrame();
-
 	FrameData(int alloc_size);
 
 	FrameData(BYTE* mem_ptr, int alloc_size);
@@ -25,9 +25,7 @@ public:
 	unsigned int getPts();
 
 	~FrameData();
-private:
-	static int remain;
-	
+private:	
 	BYTE* mem;
 	size_t mem_size;
 

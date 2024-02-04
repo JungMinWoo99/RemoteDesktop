@@ -1,6 +1,6 @@
 #pragma once
 
-#include <mutex>
+#include  <shared_mutex>
 #include <queue>
 #include <vector>
 #include <iostream>
@@ -26,31 +26,31 @@ public:
 
 	size_t size() override
 	{
-		std::lock_guard<std::mutex> lock(que_mtx);
+		std::shared_lock<std::shared_mutex> s_lock(que_mtx);
 		return queue.size();
 	}
 
 	T& front()
 	{
-		std::lock_guard<std::mutex> lock(que_mtx);
+		std::shared_lock<std::shared_mutex> s_lock(que_mtx);
 		return queue.front();
 	}
 
 	T& back()
 	{
-		std::lock_guard<std::mutex> lock(que_mtx);
+		std::shared_lock<std::shared_mutex> s_lock(que_mtx);
 		return queue.back();
 	}
 
 	void push(const T& val)
 	{
-		std::lock_guard<std::mutex> lock(que_mtx);
+		std::unique_lock<std::shared_mutex> u_lock(que_mtx);
 		queue.push(val);
 	}
 
 	_Check_return_ bool pop(T& output)
 	{
-		std::lock_guard<std::mutex> lock(que_mtx);
+		std::unique_lock<std::shared_mutex> u_lock(que_mtx);
 		if (!queue.empty())
 		{
 			output = queue.front();
@@ -66,7 +66,7 @@ private:
 
 	std::queue<T> queue;
 
-	std::mutex que_mtx;
+	std::shared_mutex que_mtx;
 };
 
 class MutexQueueMonitor
