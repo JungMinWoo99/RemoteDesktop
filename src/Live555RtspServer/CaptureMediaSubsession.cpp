@@ -42,6 +42,5 @@ FramedSource* CaptureMediaSubsession::createNewStreamSource(unsigned clientSessi
 
 RTPSink* CaptureMediaSubsession::createNewRTPSink(Groupsock* rtpGroupsock, unsigned char rtpPayloadTypeIfDynamic, FramedSource* inputSource)
 {
-	//return H264VideoRTPSink::createNew(envir(), rtpGroupsock, rtpPayloadTypeIfDynamic, fSPSNAL, fSPSNALSize, fPPSNAL, fPPSNALSize);
-	return H264VideoRTPSink::createNew(envir(), rtpGroupsock, rtpPayloadTypeIfDynamic);
+	return H264VideoRTPSink::createNew(envir(), rtpGroupsock, rtpPayloadTypeIfDynamic, fSPSNAL, fSPSNALSize, fPPSNAL, fPPSNALSize);
 }
