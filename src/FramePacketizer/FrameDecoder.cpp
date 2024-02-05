@@ -51,7 +51,7 @@ FrameDecoder::FrameDecoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 	}
 }
 
-bool FrameDecoder::DecodePacket(std::shared_ptr<SharedAVPacket> input)
+_Check_return_ bool FrameDecoder::DecodePacket(std::shared_ptr<SharedAVPacket> input)
 {
 	auto avpkt = input.get()->getPointer();
 
@@ -98,9 +98,14 @@ bool FrameDecoder::DecodePacket(std::shared_ptr<SharedAVPacket> input)
 	return is_success;
 }
 
-bool FrameDecoder::SendFrame(shared_ptr<SharedAVFrame>& frame)
+_Check_return_ bool FrameDecoder::SendFrame(shared_ptr<SharedAVFrame>& frame)
 {
 	return deced_frame_buf.pop(frame);
+}
+
+_Check_return_ bool FrameDecoder::SendFrameBlocking(std::shared_ptr<SharedAVFrame>& frame)
+{
+	return deced_frame_buf.wait_and_pop_utill_not_empty(frame);
 }
 
 const AVCodec* FrameDecoder::getDecCodec()

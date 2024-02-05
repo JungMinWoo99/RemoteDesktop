@@ -17,6 +17,8 @@ public:
 
 	_Check_return_ bool SendFrameData(std::shared_ptr<FrameData>& recv);
 
+	_Check_return_ bool SendFrameDataBlocking(std::shared_ptr<FrameData>& recv);
+
 	size_t Size();
 
 	~ScreenDataBuffer();

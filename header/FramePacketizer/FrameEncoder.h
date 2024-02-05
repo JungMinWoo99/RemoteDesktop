@@ -26,6 +26,8 @@ public:
 
 	_Check_return_ bool SendPacket(std::shared_ptr<SharedAVPacket>& packet);
 
+	_Check_return_ bool SendPacketBlocking(std::shared_ptr<SharedAVPacket>& packet);
+
 	void FlushContext();
 
 	const AVCodec* getEncCodec();

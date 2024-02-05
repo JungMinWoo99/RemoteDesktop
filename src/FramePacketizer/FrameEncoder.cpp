@@ -143,6 +143,11 @@ _Check_return_ bool FrameEncoder::SendPacket(shared_ptr<SharedAVPacket>& packet)
 	return enced_packet_buf.pop(packet);
 }
 
+_Check_return_ bool FrameEncoder::SendPacketBlocking(std::shared_ptr<SharedAVPacket>& packet)
+{
+	return enced_packet_buf.wait_and_pop_utill_not_empty(packet);
+}
+
 const AVCodec* FrameEncoder::getEncCodec()
 {
 	return enc_codec;

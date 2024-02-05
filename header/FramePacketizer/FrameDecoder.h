@@ -22,9 +22,11 @@ class FrameDecoder
 public:
 	FrameDecoder(int w = DEFALUT_WIDTH, int h = DEFALUT_HEIGHT, int frame_rate = DEFALUT_FRAME_RATE, AVCodecID coedec_id = AV_CODEC_ID_H264);
 
-	bool DecodePacket(std::shared_ptr<SharedAVPacket> input);
+	_Check_return_ bool DecodePacket(std::shared_ptr<SharedAVPacket> input);
 
-	bool SendFrame(std::shared_ptr<SharedAVFrame>& frame);
+	_Check_return_ bool SendFrame(std::shared_ptr<SharedAVFrame>& frame);
+
+	_Check_return_ bool SendFrameBlocking(std::shared_ptr<SharedAVFrame>& frame);
 
 	void FlushContext();
 

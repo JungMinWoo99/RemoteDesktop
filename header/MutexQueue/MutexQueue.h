@@ -71,6 +71,9 @@ public:
 		return ret;
 	}
 
+	/*
+	* This function waits until the queue is not empty; however, due to the existence of non-blocking pop, it cannot guarantee that it will always return an object.
+	*/
 	_Check_return_ bool wait_and_pop_utill_not_empty(T& output)
 	{
 		std::unique_lock<std::shared_mutex> u_lock(que_mtx);

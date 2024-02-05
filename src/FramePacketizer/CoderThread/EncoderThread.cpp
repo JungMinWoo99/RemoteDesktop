@@ -32,7 +32,7 @@ void AVPacketHandlerThread::HandlerFunc()
 	shared_ptr<SharedAVPacket> recv_packet;
 	while (is_processing)
 	{	
-		if (encoder.SendPacket(recv_packet))
+		if (encoder.SendPacketBlocking(recv_packet))
 			proc_obj.PacketProcess(recv_packet.get()->getPointer());
 	}
 }
@@ -68,7 +68,7 @@ void FrameEncoderThread::EncoderFunc()
 	shared_ptr<SharedAVFrame> frame;
 	while (is_processing)
 	{
-		if (wait_que.pop(frame))
+		if (wait_que.wait_and_pop_utill_not_empty(frame))
 		{
 			bool ret = encoder.EncodeFrame(frame);
 			if (ret == false)

@@ -38,7 +38,7 @@ void PeriodicDataCollector::CollectFunc()
 
 	while (collect_continue)
 	{
-		if(input_buf.SendFrameData(frame))
+		if(input_buf.SendFrameDataBlocking(frame))
 		{
 			auto frame_pts = frame.get()->getCaptureTime() / (ONE_SECOND_IN_NANOSECONDS / collect_rate);
 			auto div_remain = frame.get()->getCaptureTime() % (ONE_SECOND_IN_NANOSECONDS / collect_rate);

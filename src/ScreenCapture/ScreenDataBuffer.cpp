@@ -19,6 +19,11 @@ _Check_return_ bool ScreenDataBuffer::SendFrameData(std::shared_ptr<FrameData>& 
 	return mem_buf.pop(recv);
 }
 
+_Check_return_ bool ScreenDataBuffer::SendFrameDataBlocking(std::shared_ptr<FrameData>& recv)
+{
+	return mem_buf.wait_and_pop_utill_not_empty(recv);
+}
+
 size_t ScreenDataBuffer::Size()
 {
 	return mem_buf.size();
