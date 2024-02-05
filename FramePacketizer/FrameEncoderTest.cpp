@@ -3,6 +3,7 @@
 #include "ScreenCapture/PixFmtConverter.h"
 #include "FramePacketizer/FrameEncoder.h"
 #include "FramePacketizer/AVFrameManage.h"
+#include "ScreenCapture/DirectXScreenCapture.h"
 
 #include <iostream>
 
@@ -16,9 +17,10 @@ int main(void)
 	frame_per_sec = DEFALUT_FRAME_RATE;
 	record_time = 5;
 
-	ScreenDataBuffer screen_buf(300);
-	ScreenDataBuffer periodic_buf(record_time * frame_per_sec);
-	CaptureThread capture_obj(screen_buf);
+	ScreenDataBuffer screen_buf(300,"screen_buf");
+	ScreenDataBuffer periodic_buf(300,"periodic_buf");
+	DirectXScreenCapture cap_obj;
+	CaptureThread capture_obj(screen_buf, &cap_obj);
 	PeriodicDataCollector clt_obj(screen_buf, periodic_buf);
 	FrameEncoder encoding_buf;
 
