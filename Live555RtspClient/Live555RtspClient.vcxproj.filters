@@ -14,56 +14,44 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="TestCode">
-      <UniqueIdentifier>{5c1732a2-6982-4489-a0b0-7afcbacaf8d9}</UniqueIdentifier>
+      <UniqueIdentifier>{5e9d24b1-1535-4a6b-83b2-887237ba2f2f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\FramePacketizer\FrameDecoder.cpp">
+    <ClCompile Include="testRTSPClient.cpp">
+      <Filter>TestCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Live555RtspClient\RtspClinetContext.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\FramePacketizer\FrameEncoder.cpp">
+    <ClCompile Include="rtspclient.cpp">
+      <Filter>TestCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Live555RtspClient\RtspHandler.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="FrameEncoderTest.cpp">
-      <Filter>TestCode</Filter>
-    </ClCompile>
-    <ClCompile Include="FrameDecoderTest.cpp">
-      <Filter>TestCode</Filter>
-    </ClCompile>
-    <ClCompile Include="RTPSendTest.cpp">
-      <Filter>TestCode</Filter>
-    </ClCompile>
-    <ClCompile Include="RTPRecvTest.cpp">
-      <Filter>TestCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\FramePacketizer\CoderThread\DecoderThread.cpp">
+    <ClCompile Include="..\src\Live555RtspClient\RemoteDesktopRTSPClient.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\FramePacketizer\CoderThread\EncoderThread.cpp">
+    <ClCompile Include="..\src\Live555RtspClient\PacketSink.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="EncoderThreadTest.cpp">
-      <Filter>TestCode</Filter>
-    </ClCompile>
-    <ClCompile Include="DecoderThreadTest.cpp">
+    <ClCompile Include="TestClient.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\header\FramePacketizer\FrameDecoder.h">
+    <ClInclude Include="..\header\Live555RtspClient\RtspClinetContext.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\FramePacketizer\FrameEncoder.h">
+    <ClInclude Include="..\header\Live555RtspClient\RtspHandler.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\FramePacketizer\CoderThread\DecoderThread.h">
+    <ClInclude Include="..\header\Live555RtspClient\RemoteDesktopRTSPClient.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\FramePacketizer\CoderThread\EncoderThread.h">
+    <ClInclude Include="..\header\Live555RtspClient\PacketSink.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="TestQueueMonitorThread.h">
-      <Filter>TestCode</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

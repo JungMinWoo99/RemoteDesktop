@@ -1,3 +1,8 @@
+/*
+   This code was written with reference to the following source.
+   source: https://infoarts.tistory.com/35
+*/
+
 #include "BasicUsageEnvironment.hh"
 #include "GroupsockHelper.hh"
 #include "UsageEnvironment.hh"
@@ -10,7 +15,7 @@ public:
 
 	void setPPSNAL(const BYTE* ptr, int size);
 	void setSPSNAL(const BYTE* ptr, int size);
-	void setBitRate(BYTE br);
+	void setBitRate(unsigned long br);
 
 protected:
 	FramedSource* createNewStreamSource(unsigned clientSessionId, unsigned& estBitrate) override;
@@ -23,3 +28,4 @@ protected:
 	const BYTE* fSPSNAL;
 	int fSPSNALSize;
 };
+

@@ -8,9 +8,16 @@ extern "C" {
 }
 #include <memory>
 
-#include "FramePacketizer/PacketData.h"
+#include "MemoryManage/PacketData.h"
+#include "MemoryManage/AVStructPool.h"
 
-std::shared_ptr<PacketData> ConvertAVPacketToRawWithoutHeader(const AVPacket* src);
+#define NAL_HEADER_LEN 4
+
+std::shared_ptr<PacketData> ConvertAVPacketToRawWithoutHeader(AVPacket* src);
+
+std::shared_ptr<PacketData> ConvertAVPacketToRawWithoutHeader(std::shared_ptr <SharedAVPacket> src);
+
+std::shared_ptr <SharedAVPacket> ConvertRawToAVPacketWithHeader(std::shared_ptr<PacketData> src);
 
 const BYTE* FindNextNAL(const BYTE* data_start, const BYTE* data_end);
 

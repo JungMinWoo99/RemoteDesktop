@@ -38,7 +38,7 @@ FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 	enc_context->gop_size = GOP_SIZE;
 	enc_context->pix_fmt = DEFALUT_PIX_FMT;
 	enc_context->bit_rate = RECOMMAND_BIT_RATE;
-	enc_context->max_b_frames = 0; // no b frame
+	enc_context->max_b_frames = 1; // no b frame
 	enc_context->codec_type = AVMEDIA_TYPE_VIDEO;
 	enc_context->flags |= AV_CODEC_FLAG_QSCALE;
 	enc_context->rc_buffer_size = enc_context->rc_max_rate;
@@ -68,7 +68,7 @@ FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 		else
 			log_stream << "av_opt_set fail" << endl;
 	}
-	error_code = av_opt_set(enc_context->priv_data, "crf", "18", 0);
+	error_code = av_opt_set(enc_context->priv_data, "crf", "23", 0);
 	if (error_code < 0)
 	{
 		if (error_code == AVERROR_OPTION_NOT_FOUND)

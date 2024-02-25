@@ -2,7 +2,7 @@
 #include "MultiThreadFrameGetter/PeriodicDataCollector.h"
 #include "ScreenCapture/PixFmtConverter.h"
 #include "FramePacketizer/FrameEncoder.h"
-#include "FramePacketizer/AVFrameManage.h"
+#include "MemoryManage/AVFrameManage.h"
 #include "ScreenCapture/DirectXScreenCapture.h"
 
 #include <iostream>

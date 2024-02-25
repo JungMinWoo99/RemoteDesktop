@@ -16,7 +16,7 @@ RtspServerContext::RtspServerContext()
 		exit(-1);
 	}
 
-	if (rtspServer->setUpTunnelingOverHTTP(80) || rtspServer->setUpTunnelingOverHTTP(8080)) 
+	if (false/*rtspServer->setUpTunnelingOverHTTP(80) || rtspServer->setUpTunnelingOverHTTP(8080)*/)
 	{
 		*env << "\n(We use port " << rtspServer->httpServerPortNum() << " for optional RTSP-over-HTTP tunneling.)\n";
 	}

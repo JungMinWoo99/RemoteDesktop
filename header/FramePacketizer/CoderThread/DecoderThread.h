@@ -3,7 +3,7 @@
 #include <thread>
 
 #include "FramePacketizer/FrameDecoder.h"
-#include "FramePacketizer/AVFrameManage.h"
+#include "MemoryManage/AVFrameManage.h"
 
 class AVFrameProcessor abstract
 {

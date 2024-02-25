@@ -20,7 +20,7 @@ void CaptureMediaSubsession::setSPSNAL(const BYTE* ptr, int size)
 	fSPSNALSize = size;
 }
 
-void CaptureMediaSubsession::setBitRate(BYTE br)
+void CaptureMediaSubsession::setBitRate(unsigned long br)
 {
 	if (br > 102400)
 	{

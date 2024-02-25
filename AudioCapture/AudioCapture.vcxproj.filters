@@ -14,56 +14,38 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="TestCode">
-      <UniqueIdentifier>{5c1732a2-6982-4489-a0b0-7afcbacaf8d9}</UniqueIdentifier>
+      <UniqueIdentifier>{d35182e7-d548-4b4b-b0d9-5b120f4a7857}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\FramePacketizer\FrameDecoder.cpp">
+    <ClCompile Include="..\src\AudioCapture\PaAudioCapture.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\FramePacketizer\FrameEncoder.cpp">
+    <ClCompile Include="PaAudioTest.cpp">
+      <Filter>TestCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\AudioCapture\WinAudioCapture.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="FrameEncoderTest.cpp">
+    <ClCompile Include="capture_example.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
-    <ClCompile Include="FrameDecoderTest.cpp">
+    <ClCompile Include="encode_audio.c">
       <Filter>TestCode</Filter>
     </ClCompile>
-    <ClCompile Include="RTPSendTest.cpp">
+    <ClCompile Include="capture_raw_and_encoded_example.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
-    <ClCompile Include="RTPRecvTest.cpp">
-      <Filter>TestCode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\FramePacketizer\CoderThread\DecoderThread.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\FramePacketizer\CoderThread\EncoderThread.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="EncoderThreadTest.cpp">
-      <Filter>TestCode</Filter>
-    </ClCompile>
-    <ClCompile Include="DecoderThreadTest.cpp">
+    <ClCompile Include="mux.c">
       <Filter>TestCode</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\header\FramePacketizer\FrameDecoder.h">
+    <ClInclude Include="..\header\AudioCapture\PaAudioCapture.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="..\header\FramePacketizer\FrameEncoder.h">
+    <ClInclude Include="..\header\AudioCapture\WinAudioCapture.h">
       <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\FramePacketizer\CoderThread\DecoderThread.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\FramePacketizer\CoderThread\EncoderThread.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="TestQueueMonitorThread.h">
-      <Filter>TestCode</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

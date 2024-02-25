@@ -2,7 +2,7 @@
 #include "MutexQueue/MutexQueue.h"
 #include "ResourceMonitor/CountableResource.h"
 #include "ScreenCapture/FrameData.h"
-#include "FramePacketizer/AVStructPool.h"
+#include "MemoryManage/AVStructPool.h"
 
 #include <iostream>
 #include <thread>

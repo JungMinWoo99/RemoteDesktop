@@ -1,9 +1,9 @@
-#pragma once
-
 /*
    This code was written with reference to the following source.
    source: https://infoarts.tistory.com/35
 */
+
+#pragma once
 
 #include "Live555RtspServer/EncodedPacketFramedSource.h"
 #include "Live555RtspServer/CaptureMediaSubsession.h"

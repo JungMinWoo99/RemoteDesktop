@@ -1,15 +1,42 @@
-#include "FramePacketizer/AVPacketManage.h"
+#include "MemoryManage/AVPacketManage.h"
 
-#define NAL_HEADER_LEN 4
 using namespace std;
 
-shared_ptr<PacketData> ConvertAVPacketToRawWithoutHeader(const AVPacket* src)
+std::shared_ptr<PacketData> ConvertAVPacketToRawWithoutHeader(AVPacket* src)
 {
-	BYTE* p_data = src->data+ NAL_HEADER_LEN;
-	size_t p_size = src->size- NAL_HEADER_LEN;
+	auto data_ptr = src->data;
+	auto data_size = src->size;
+	BYTE* p_data = data_ptr + NAL_HEADER_LEN;
+	size_t p_size = data_size - NAL_HEADER_LEN;
 
 	auto ret = make_shared< PacketData>(p_size);
 	memcpy(ret.get()->getMemPointer(), p_data, p_size);
+
+	return ret;
+}
+
+shared_ptr<PacketData> ConvertAVPacketToRawWithoutHeader(std::shared_ptr <SharedAVPacket> src)
+{
+	auto data_ptr = src.get()->getPointer()->data;
+	auto data_size = src.get()->getPointer()->size;
+	BYTE* p_data = data_ptr + NAL_HEADER_LEN;
+	size_t p_size = data_size - NAL_HEADER_LEN;
+
+	auto ret = make_shared< PacketData>(p_size);
+	memcpy(ret.get()->getMemPointer(), p_data, p_size);
+
+	return ret;
+}
+
+std::shared_ptr<SharedAVPacket> ConvertRawToAVPacketWithHeader(std::shared_ptr<PacketData> src)
+{
+	auto data_ptr = src.get()->getMemPointer();
+	auto data_size = src.get()->getMemSize();
+	auto ret = AVStructPool<AVPacket*>::getInstance().getEmptyObj();
+	
+	av_new_packet(ret.get()->getPointer(), data_size);
+
+	memcpy(ret.get()->getPointer()->data , data_ptr, data_size );
 
 	return ret;
 }

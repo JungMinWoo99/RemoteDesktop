@@ -10,7 +10,7 @@ extern "C" {
 
 #include "Constant/VideoConstants.h"
 #include "ScreenCapture/FrameData.h"
-#include "FramePacketizer/AVStructPool.h"
+#include "MemoryManage/AVStructPool.h"
 
 #include<queue>
 #include<memory>

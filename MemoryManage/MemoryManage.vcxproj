@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|x64">
@@ -13,8 +13,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{645bc3de-fea4-4a34-8b9c-a7c774132519}</ProjectGuid>
-    <RootNamespace>FramePacketizer</RootNamespace>
+    <ProjectGuid>{699b1a03-564b-4669-b14d-2d7530f0ec6a}</ProjectGuid>
+    <RootNamespace>MemoryManage</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -51,14 +51,11 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <AdditionalModuleDependencies>
-      </AdditionalModuleDependencies>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>FrameData.obj;PeriodicDataCollector.obj;ScreenDataBuffer.obj;CaptureThread.obj;ScreenCapture.obj;DirectXScreenCapture.obj;WinScreenCapture.obj;WinScreenPrinter.obj;DXGIManager.obj;MutexQueue.obj;AVStructPool.obj;PixFmtConverter.obj;PacketData.obj;AVFrameManage.obj;AVPacketManage.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FrameData.obj;MutexQueue.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -75,45 +72,20 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>FrameData.obj;PeriodicDataCollector.obj;ScreenDataBuffer.obj;CaptureThread.obj;ScreenCapture.obj;DirectXScreenCapture.obj;WinScreenCapture.obj;WinScreenPrinter.obj;DXGIManager.obj;MutexQueue.obj;AVStructPool.obj;PixFmtConverter.obj;PacketData.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>FrameData.obj;MutexQueue.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\FramePacketizer\CoderThread\DecoderThread.cpp" />
-    <ClCompile Include="..\src\FramePacketizer\CoderThread\EncoderThread.cpp" />
-    <ClCompile Include="..\src\FramePacketizer\FrameDecoder.cpp" />
-    <ClCompile Include="..\src\FramePacketizer\FrameEncoder.cpp" />
-    <ClCompile Include="DecoderThreadTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="EncoderThreadTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="FrameDecoderTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="FrameEncoderTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="RTPRecvTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
-    </ClCompile>
-    <ClCompile Include="RTPSendTest.cpp">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClCompile>
+    <ClCompile Include="..\src\MemoryManage\AVFrameManage.cpp" />
+    <ClCompile Include="..\src\MemoryManage\AVPacketManage.cpp" />
+    <ClCompile Include="..\src\MemoryManage\AVStructPool.cpp" />
+    <ClCompile Include="..\src\MemoryManage\PacketData.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\header\FramePacketizer\CoderThread\DecoderThread.h" />
-    <ClInclude Include="..\header\FramePacketizer\CoderThread\EncoderThread.h" />
-    <ClInclude Include="..\header\FramePacketizer\FrameDecoder.h" />
-    <ClInclude Include="..\header\FramePacketizer\FrameEncoder.h" />
-    <ClInclude Include="TestQueueMonitorThread.h" />
+    <ClInclude Include="..\header\MemoryManage\AVFrameManage.h" />
+    <ClInclude Include="..\header\MemoryManage\AVPacketManage.h" />
+    <ClInclude Include="..\header\MemoryManage\AVStructPool.h" />
+    <ClInclude Include="..\header\MemoryManage\PacketData.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

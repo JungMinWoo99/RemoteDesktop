@@ -1,6 +1,6 @@
 #pragma once
 
-#define RECOMMAND_BIT_RATE 5500
+#define RECOMMAND_BIT_RATE 5500000
 #define DEFALUT_WIDTH 1920
 #define DEFALUT_HEIGHT 1080
 
@@ -15,3 +15,5 @@
 #define TIME_STEP_DIVISION 5 
 
 #define BYTE_PER_PIXEL 4
+
+#define AUDIO_SAMPLE_RATE 44100

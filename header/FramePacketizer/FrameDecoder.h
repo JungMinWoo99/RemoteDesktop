@@ -14,7 +14,7 @@ extern "C" {
 #include "Constant/VideoConstants.h"
 #include "ScreenCapture/FrameData.h"
 #include "MutexQueue/MutexQueue.h"
-#include "FramePacketizer/AVStructPool.h"
+#include "MemoryManage/AVStructPool.h"
 
 
 class FrameDecoder
