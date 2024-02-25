@@ -5,6 +5,11 @@
 
 RtspServerExample/
 video-sdk-samples-master/
+**/*.txt
+**/*.aac
+**/*.bin
+**/*.log
+**/*.avi
 
 # User-specific files
 *.rsuser
