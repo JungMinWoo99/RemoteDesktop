@@ -17,7 +17,7 @@ LRESULT CALLBACK DirectXScreenPrinterWndProc(HWND hWnd, UINT message, WPARAM wPa
 	return 0;
 }
 
-DirectXScreenPrinter::DirectXScreenPrinter(int width, int height, const std::shared_ptr<FrameData>& frame_ref)
+DirectXScreenPrinter::DirectXScreenPrinter(int width, int height, const std::shared_ptr<VideoFrameData>& frame_ref)
 	:ScreenPrinter(width, height), frame_ref(frame_ref)
 {
 	//set window class
@@ -127,7 +127,7 @@ DirectXScreenPrinter::~DirectXScreenPrinter()
 	swapChain->Release();
 }
 
-void DirectXScreenPrinter::PrintFrame(shared_ptr<FrameData> frame)
+void DirectXScreenPrinter::PrintFrame(shared_ptr<VideoFrameData> frame)
 {
 	if(texture!= nullptr)
 		texture->Release();
@@ -194,7 +194,7 @@ void DirectXScreenPrinter::PrintFrame(shared_ptr<FrameData> frame)
 
 void DirectXScreenPrinter::PrintFunc()
 {
-	std::shared_ptr<FrameData> prev_frame;
+	std::shared_ptr<VideoFrameData> prev_frame;
 	while (is_printing)
 	{
 		if (frame_ref != prev_frame)

@@ -4,25 +4,25 @@
 #include <windows.h>
 
 #include "ScreenPrinter/ScreenPrinter.h"
-#include "ScreenCapture/FrameData.h"
+#include "MemoryManage/Framedata.h"
 
 #define WIN32_LEAN_AND_MEAN
 
 class DirectXScreenPrinter : ScreenPrinter
 {
 public:
-	DirectXScreenPrinter(int width, int height, const std::shared_ptr<FrameData>& frame_ref);
+	DirectXScreenPrinter(int width, int height, const std::shared_ptr<VideoFrameData>& frame_ref);
 	void StartPrint() override;
 	void EndPrint() override;
 	~DirectXScreenPrinter();
 
 private:
-	void PrintFrame(std::shared_ptr<FrameData> frame) override;
+	void PrintFrame(std::shared_ptr<VideoFrameData> frame) override;
 
 	void PrintFunc();
 	std::thread print_thread;
 
-	const std::shared_ptr<FrameData>& frame_ref;
+	const std::shared_ptr<VideoFrameData>& frame_ref;
 	bool is_printing;
 
 	// Direct3D

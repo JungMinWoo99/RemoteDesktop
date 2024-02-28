@@ -12,7 +12,7 @@ public:
 
 	WinScreenCapture();
 
-	std::shared_ptr<FrameData> CaptureCurrentScreen() override;
+	std::shared_ptr<VideoFrameData> CaptureCurrentScreen() override;
 
 	const BITMAPINFO& getBMI() const;
 

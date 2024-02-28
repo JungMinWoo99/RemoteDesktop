@@ -1,6 +1,6 @@
 #include "MultiThreadFrameGetter/CaptureThread.h"
 #include "MultiThreadFrameGetter/PeriodicDataCollector.h"
-#include "ScreenCapture/PixFmtConverter.h"
+#include "MemoryManage/PixFmtConverter.h"
 #include "FramePacketizer/FrameEncoder.h"
 #include "MemoryManage/AVFrameManage.h"
 #include "ScreenCapture/DirectXScreenCapture.h"
@@ -72,8 +72,8 @@ int main(void)
 	}
 
 	PixFmtConverter pix_fmt_cvt;
-	shared_ptr<FrameData> next_frame;
-	shared_ptr<FrameData> prev_frame = nullptr;
+	shared_ptr<VideoFrameData> next_frame;
+	shared_ptr<VideoFrameData> prev_frame = nullptr;
 	auto frame = AVStructPool<AVFrame*>::getInstance().getEmptyObj();
 	auto av_frame = frame.get()->getPointer();
 	AllocAVFrameBuf(av_frame, encoding_buf.getEncCodecContext());

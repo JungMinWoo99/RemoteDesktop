@@ -3,32 +3,66 @@
    source: https://github.com/chrisrouck/tutorial-cpp-audio-capture
 */
 
-#include <stdio.h>
-#include <stdlib.h>
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libavutil/imgutils.h>
+#include <libswscale/swscale.h>
+#include <libswresample/swresample.h>
+}
 
-#include "portaudio.h"
-#include "Constant/VideoConstants.h"
+
+#include <windows.h>
+#include <mmdeviceapi.h>
+#include <audioclient.h>
+
+#include <thread>
+#include <memory>
+
+#include "MemoryManage/FrameData.h"
+#include "MutexQueue/MutexQueue.h"
 
 class WinAudioCapture
 {
 public:
     WinAudioCapture();
 
+	void StartCapture();
+
+	MutexQueue<std::shared_ptr<AudioFrameData>>& getDataBuffer();
+
+	int getAudioChannels();
+	int getAudioSampleRate();
+	int getAudioSampleSize();
+	AVSampleFormat getAudioSampleFormat();
+
+
+	void EndCapture();
+
+	~WinAudioCapture();
 private:
-    PaStreamParameters input_param;
+    HRESULT hr;
+	UINT32 max_buffer_frame_count;
+	IMMDeviceEnumerator* pEnumerator = NULL;
+	IMMDevice* pDevice = NULL;
+	IAudioClient* pAudioClient = NULL;
+	IAudioCaptureClient* pCaptureClient = NULL;
 
-    static int PaCaptureCallback(
-        const void* inputBuffer, void* outputBuffer, unsigned long framesPerBuffer,
-        const PaStreamCallbackTimeInfo* timeInfo, PaStreamCallbackFlags statusFlags,
-        void* userData
-    );
+	int audio_channels;
+	int sample_rate;
+	int byte_per_sample;
+	int vaild_bit_per_sample;
+	AVSampleFormat raw_data_format;
 
-    void checkErr(PaError err) {
-        if (err != paNoError) {
-            printf("PortAudio error: %s\n", Pa_GetErrorText(err));
-            exit(EXIT_FAILURE);
-        }
-    }
+	std::thread cap_thread;
+
+	MutexQueue<std::shared_ptr<AudioFrameData>> raw_data_que;
+
+	bool continue_capture;
+
+    void CheckError(HRESULT hr);
+
+	void CaptureFunc();
 };
 
 

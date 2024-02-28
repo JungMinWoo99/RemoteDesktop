@@ -1,6 +1,6 @@
 #include "MultiThreadFrameGetter/CaptureThread.h"
 #include "MultiThreadFrameGetter/PeriodicDataCollector.h"
-#include "ScreenCapture/PixFmtConverter.h"
+#include "MemoryManage/PixFmtConverter.h"
 #include "FramePacketizer/FrameDecoder.h"
 #include "FramePacketizer/AVFrameManage.h"
 #include "FramePacketizer/CoderThread/DecoderThread.h"
@@ -59,7 +59,7 @@ public:
 		if (avcodec_open2(*dec_codec_context, codec, NULL) < 0)
 			cout << "Cannot open codec" << endl;
 
-		yuv_frame_data = make_shared<FrameData>(DEFALUT_WIDTH * DEFALUT_HEIGHT * 4 / 2 * 3 / 4);
+		yuv_frame_data = make_shared<VideoFrameData>(DEFALUT_WIDTH * DEFALUT_HEIGHT * 4 / 2 * 3 / 4);
 		s_printer.StartPrint();
 	}
 
@@ -84,9 +84,9 @@ private:
 	AVFormatContext** formatContext;
 	AVCodecContext** dec_codec_context;
 	WinScreenPrinter s_printer;
-	shared_ptr<FrameData> yuv_frame_data;
+	shared_ptr<VideoFrameData> yuv_frame_data;
 	PixFmtConverter cnv;
-	shared_ptr<FrameData> frame_ref;
+	shared_ptr<VideoFrameData> frame_ref;
 };
 
 

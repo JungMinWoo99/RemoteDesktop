@@ -39,6 +39,9 @@
     <ClCompile Include="mux.c">
       <Filter>TestCode</Filter>
     </ClCompile>
+    <ClCompile Include="WinAudioCaptureTest.cpp">
+      <Filter>TestCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\AudioCapture\PaAudioCapture.h">

@@ -34,7 +34,7 @@ void PeriodicDataCollector::CollectFunc()
 {
 	static unsigned int next_pts = 0;
 
-	shared_ptr<FrameData> frame;
+	shared_ptr<VideoFrameData> frame;
 
 	while (collect_continue)
 	{
@@ -55,7 +55,7 @@ void PeriodicDataCollector::CollectFunc()
 				
 				while (frame_pts > next_pts)
 				{
-					shared_ptr<FrameData> tem = make_shared<FrameData>(frame.get()->getMemSize());
+					shared_ptr<VideoFrameData> tem = make_shared<VideoFrameData>(frame.get()->getMemSize());
 					memcpy(tem.get()->getMemPointer(), frame.get()->getMemPointer(), frame.get()->getMemSize());
 					tem.get()->setCaptureTime(frame.get()->getCaptureTime());
 					tem.get()->setPts(next_pts);

@@ -22,7 +22,7 @@ private:
 	FrameDecoder& decoder;
 	AVFrameProcessor& proc_obj;
 	
-	std::shared_ptr<FrameData> recent_frame;
+	std::shared_ptr<VideoFrameData> recent_frame;
 
 	std::thread proc_thread;
 

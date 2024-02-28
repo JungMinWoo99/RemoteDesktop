@@ -1,5 +1,5 @@
 #include "MultiThreadFrameGetter/PeriodicDataCollector.h"
-#include "ScreenCapture/PixFmtConverter.h"
+#include "MemoryManage/PixFmtConverter.h"
 #include "FramePacketizer/FrameDecoder.h"
 #include "ScreenPrinter/WinScreenPrinter.h"
 #include "MultiThreadFrameGetter/CaptureThread.h"
@@ -47,7 +47,7 @@ public:
             exit(-1);
         }
 
-        yuv_frame_data = make_shared<FrameData>(DEFALUT_WIDTH * DEFALUT_HEIGHT * 4 / 2 * 3 / 4);
+        yuv_frame_data = make_shared<VideoFrameData>(DEFALUT_WIDTH * DEFALUT_HEIGHT * 4 / 2 * 3 / 4);
 
         s_printer.StartPrint();
     }
@@ -66,9 +66,9 @@ public:
 private:
     AVFormatContext** formatContext;
     WinScreenPrinter s_printer;
-    shared_ptr<FrameData> yuv_frame_data;
+    shared_ptr<VideoFrameData> yuv_frame_data;
     PixFmtConverter cnv;
-    shared_ptr<FrameData> frame_ref;
+    shared_ptr<VideoFrameData> frame_ref;
 
 };
 

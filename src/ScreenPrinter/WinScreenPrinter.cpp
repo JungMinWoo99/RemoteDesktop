@@ -15,7 +15,7 @@ LRESULT CALLBACK WinScreenPrinterWndProc(HWND hWnd, UINT message, WPARAM wParam,
 	return 0;
 }
 
-WinScreenPrinter::WinScreenPrinter(int width, int height, const BITMAPINFO& bmi, const std::shared_ptr<FrameData>& frame_ref):ScreenPrinter(width,height),bmi(bmi), frame_ref(frame_ref)
+WinScreenPrinter::WinScreenPrinter(int width, int height, const BITMAPINFO& bmi, const std::shared_ptr<VideoFrameData>& frame_ref):ScreenPrinter(width,height),bmi(bmi), frame_ref(frame_ref)
 {
 	wc.cbSize = sizeof(WNDCLASSEX);
 	wc.style = CS_HREDRAW | CS_VREDRAW;
@@ -49,7 +49,7 @@ void WinScreenPrinter::EndPrint()
 	DestroyWindow(_main);
 }
 
-void WinScreenPrinter::PrintFrame(shared_ptr<FrameData> frame)
+void WinScreenPrinter::PrintFrame(shared_ptr<VideoFrameData> frame)
 {
 	SetDIBitsToDevice(mainDC, 0, 0, w, h, 0, 0, 0, h, frame.get()->getMemPointer(), &bmi, DIB_RGB_COLORS);
 	UpdateWindow(_main);
@@ -58,7 +58,7 @@ void WinScreenPrinter::PrintFrame(shared_ptr<FrameData> frame)
 
 void WinScreenPrinter::PrintFunc()
 {
-	std::shared_ptr<FrameData> prev_frame;
+	std::shared_ptr<VideoFrameData> prev_frame;
 	while (is_printing)
 	{
 		if (frame_ref != prev_frame)

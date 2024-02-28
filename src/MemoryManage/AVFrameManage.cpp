@@ -27,7 +27,7 @@ bool AllocAVFrameBuf(AVFrame*& output_av, const AVCodecContext* c_context)
 	return true;
 }
 
-void CopyAVFrameToRaw(const AVFrame* src, std::shared_ptr<FrameData> dst)
+void CopyAVFrameToRaw(const AVFrame* src, std::shared_ptr<VideoFrameData> dst)
 {
 	BYTE* frame_ptr = dst.get()->getMemPointer();
 	size_t frame_size = dst.get()->getMemSize();
@@ -43,7 +43,7 @@ void CopyAVFrameToRaw(const AVFrame* src, std::shared_ptr<FrameData> dst)
 		frame_size / 6);
 }
 
-void CopyRawToAVFrame(const std::shared_ptr<FrameData> src, AVFrame* dst)
+void CopyRawToAVFrame(const std::shared_ptr<VideoFrameData> src, AVFrame* dst)
 {
 	dst->pts = src.get()->getPts();
 

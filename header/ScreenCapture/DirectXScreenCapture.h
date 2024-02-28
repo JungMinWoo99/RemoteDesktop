@@ -16,7 +16,7 @@ class DirectXScreenCapture : public ScreenCapture
 public:
 	DirectXScreenCapture();
 	
-	std::shared_ptr<FrameData> CaptureCurrentScreen() override;
+	std::shared_ptr<VideoFrameData> CaptureCurrentScreen() override;
 
 	~DirectXScreenCapture() override;
 

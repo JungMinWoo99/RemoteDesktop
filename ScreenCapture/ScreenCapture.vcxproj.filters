@@ -27,9 +27,6 @@
     <ClCompile Include="ScreenDataBufferTest.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ScreenCapture\FrameData.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\ScreenCapture\ScreenCapture.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -48,14 +45,8 @@
     <ClCompile Include="DirectXScreenCaptureTest.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\ScreenCapture\PixFmtConverter.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\header\ScreenCapture\FrameData.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="..\header\ScreenCapture\ScreenCapture.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -70,9 +61,6 @@
     </ClInclude>
     <ClInclude Include="..\header\ExternCode\DXGIManager\DXGIManager.h">
       <Filter>ExternCode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\header\ScreenCapture\PixFmtConverter.h">
-      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,6 +1,6 @@
 #include "MultiThreadFrameGetter/CaptureThread.h"
 #include "MultiThreadFrameGetter/PeriodicDataCollector.h"
-#include "ScreenCapture/PixFmtConverter.h"
+#include "MemoryManage/PixFmtConverter.h"
 #include "FramePacketizer/FrameEncoder.h"
 #include "FramePacketizer/CoderThread/EncoderThread.h"
 #include "FramePacketizer/AVFrameManage.h"
@@ -93,8 +93,8 @@ int main(void)
 
 	//frame data process
 	PixFmtConverter pix_fmt_cvt;
-	shared_ptr<FrameData> next_frame;
-	shared_ptr<FrameData> prev_frame = nullptr;
+	shared_ptr<VideoFrameData> next_frame;
+	shared_ptr<VideoFrameData> prev_frame = nullptr;
 	shared_ptr<SharedAVPacket> packet;
 	
 	capture_obj.StartCapture();

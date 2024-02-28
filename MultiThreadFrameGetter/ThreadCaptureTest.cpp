@@ -17,7 +17,7 @@ int main(void)
 	DirectXScreenCapture capture_obj;
 	WinScreenCapture tem;
 	CaptureThread capture_thread(screen_buf, &capture_obj);
-	std::shared_ptr<FrameData> buf;
+	std::shared_ptr<VideoFrameData> buf;
 	WinScreenPrinter screen_printer(w, h, tem.getBMI(), buf);
 
 	capture_thread.StartCapture();
@@ -35,7 +35,7 @@ int main(void)
 	else if (TEST_NUM == 1)
 	{
 		int frame_num = DEFALUT_FRAME_RATE * 10;
-		std::vector<std::shared_ptr<FrameData>> frame_vector;
+		std::vector<std::shared_ptr<VideoFrameData>> frame_vector;
 		for (int i = 0; i < frame_num; i++)
 		{
 			while (!screen_buf.SendFrameData(buf));

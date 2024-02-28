@@ -7,10 +7,10 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 #include <memory>
-#include "ScreenCapture/FrameData.h"
+#include "MemoryManage/Framedata.h"
 
 bool AllocAVFrameBuf(AVFrame*& output_av, const AVCodecContext* c_context);
 
-void CopyAVFrameToRaw(const AVFrame* src ,std::shared_ptr<FrameData> dst);
+void CopyAVFrameToRaw(const AVFrame* src ,std::shared_ptr<VideoFrameData> dst);
 
-void CopyRawToAVFrame(const std::shared_ptr<FrameData> src, AVFrame* dst);
+void CopyRawToAVFrame(const std::shared_ptr<VideoFrameData> src, AVFrame* dst);

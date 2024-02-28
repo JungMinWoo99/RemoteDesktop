@@ -7,7 +7,7 @@ int main(void)
 	int w, h;
 	w = DEFALUT_WIDTH;
 	h = DEFALUT_HEIGHT;
-	std::shared_ptr<FrameData> current_frame;
+	std::shared_ptr<VideoFrameData> current_frame;
 	WinScreenCapture capture_obj;
 	DirectXScreenPrinter screen_print(w, h, current_frame);
 

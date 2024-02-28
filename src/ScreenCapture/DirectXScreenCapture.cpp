@@ -36,13 +36,13 @@ DirectXScreenCapture::DirectXScreenCapture()
 	buf_byte_size = pixel_width * pixel_height * color_bits / 8;
 }
 
-shared_ptr<FrameData> DirectXScreenCapture::CaptureCurrentScreen()
+shared_ptr<VideoFrameData> DirectXScreenCapture::CaptureCurrentScreen()
 {
 	static chrono::steady_clock::time_point start_tp = chrono::steady_clock::now();
 
-	static shared_ptr<FrameData> prev_frame;
+	static shared_ptr<VideoFrameData> prev_frame;
 
-	shared_ptr<FrameData> pixel_data_buf = make_shared<FrameData>(this->buf_byte_size);
+	shared_ptr<VideoFrameData> pixel_data_buf = make_shared<VideoFrameData>(this->buf_byte_size);
 
 	if (!cap_mtx.try_lock())
 	{

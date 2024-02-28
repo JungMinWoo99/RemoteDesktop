@@ -7,19 +7,19 @@ ScreenDataBuffer::ScreenDataBuffer(unsigned int buf_size, string buf_name)
 {
 }
 
-void ScreenDataBuffer::RecvFrameData(std::shared_ptr<FrameData> frame)
+void ScreenDataBuffer::RecvFrameData(std::shared_ptr<VideoFrameData> frame)
 {
 	mem_buf.push(frame);
 
 	while (mem_buf.size() > max_buf_size && mem_buf.pop(frame));
 }
 
-_Check_return_ bool ScreenDataBuffer::SendFrameData(std::shared_ptr<FrameData>& recv)
+_Check_return_ bool ScreenDataBuffer::SendFrameData(std::shared_ptr<VideoFrameData>& recv)
 {
 	return mem_buf.pop(recv);
 }
 
-_Check_return_ bool ScreenDataBuffer::SendFrameDataBlocking(std::shared_ptr<FrameData>& recv)
+_Check_return_ bool ScreenDataBuffer::SendFrameDataBlocking(std::shared_ptr<VideoFrameData>& recv)
 {
 	return mem_buf.wait_and_pop_utill_not_empty(recv);
 }

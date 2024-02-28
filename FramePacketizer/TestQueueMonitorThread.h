@@ -1,7 +1,7 @@
 #pragma once
 #include "MutexQueue/MutexQueue.h"
 #include "ResourceMonitor/CountableResource.h"
-#include "ScreenCapture/FrameData.h"
+#include "MemoryManage/Framedata.h"
 #include "MemoryManage/AVStructPool.h"
 
 #include <iostream>
@@ -48,7 +48,7 @@ private:
         while (running) {
             std::cout << std::endl;
             MutexQueueMonitor::getMonitor().PrintQueueList();  // 주기적으로 호출할 함수 실행
-            std::cout << CountableResource<FrameData>::PrintRemainResource()<< std::endl;
+            std::cout << CountableResource<VideoFrameData>::PrintRemainResource()<< std::endl;
             std::cout << CountableResource<SharedAVFrame>::PrintRemainResource() << std::endl;
             std::cout << CountableResource<SharedAVPacket>::PrintRemainResource() << std::endl;
             std::this_thread::sleep_for(interval);  // 주기만큼 대기

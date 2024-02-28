@@ -53,7 +53,7 @@ int main(void)
 	clt_obj.EndCollect();
 	capture_obj2.EndCapture();
 
-	std::shared_ptr<FrameData> frame;
+	std::shared_ptr<VideoFrameData> frame;
 	auto until = std::chrono::high_resolution_clock::now() + std::chrono::microseconds(1000000 / frame_per_sec);
 	int prev_pts = 0;
 	while(!periodic_buf.Empty())

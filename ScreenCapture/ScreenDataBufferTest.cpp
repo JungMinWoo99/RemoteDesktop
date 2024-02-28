@@ -35,7 +35,7 @@ int main(void)
 
 	std::thread screen_cap(capture_screen);
 
-	std::shared_ptr<FrameData> buf;
+	std::shared_ptr<VideoFrameData> buf;
 	WinScreenPrinter screen_printer(w, h, capture_obj.getBMI(), buf);
 	
 	if (TEST_NUM == 0)
@@ -51,7 +51,7 @@ int main(void)
 	else if (TEST_NUM == 1)
 	{
 		int frame_num = DEFALUT_FRAME_RATE * 10;
-		std::vector<std::shared_ptr<FrameData>> frame_vector;
+		std::vector<std::shared_ptr<VideoFrameData>> frame_vector;
 		for (int i = 0; i < frame_num; i++)
 		{
 			while(!screen_buf.SendFrameData(buf));

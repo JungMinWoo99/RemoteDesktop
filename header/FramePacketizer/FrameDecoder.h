@@ -12,7 +12,7 @@ extern "C" {
 
 
 #include "Constant/VideoConstants.h"
-#include "ScreenCapture/FrameData.h"
+#include "MemoryManage/Framedata.h"
 #include "MutexQueue/MutexQueue.h"
 #include "MemoryManage/AVStructPool.h"
 

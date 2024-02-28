@@ -8,7 +8,7 @@ extern "C" {
 }
 
 #include "Constant/VideoConstants.h"
-#include "ScreenCapture/FrameData.h"
+#include "MemoryManage/Framedata.h"
 
 #define DEFALUT_SEGMENT_SEC 1
 #define DEFALUT_TIME_BASE_UNIT 1000
@@ -21,8 +21,8 @@ class PixFmtConverter
 public:
 	PixFmtConverter(int width = DEFALUT_WIDTH, int height = DEFALUT_HEIGHT);
 
-	std::shared_ptr<FrameData> ConvertBGRToYUV(std::shared_ptr<FrameData> bgr_data);
-	std::shared_ptr<FrameData> ConvertYUVToBGR(std::shared_ptr<FrameData> yuv_data);
+	std::shared_ptr<VideoFrameData> ConvertBGRToYUV(std::shared_ptr<VideoFrameData> bgr_data);
+	std::shared_ptr<VideoFrameData> ConvertYUVToBGR(std::shared_ptr<VideoFrameData> yuv_data);
 
 	~PixFmtConverter();
 private:
@@ -35,5 +35,5 @@ private:
 	int bgr_stride[1];
 	int yuv_stride[3];
 
-	void FlipData(std::shared_ptr<FrameData> yuv_frame_data);
+	void FlipData(std::shared_ptr<VideoFrameData> yuv_frame_data);
 };

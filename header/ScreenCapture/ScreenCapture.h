@@ -5,7 +5,7 @@
 #include <memory>
 #include <mutex>
 
-#include "ScreenCapture/FrameData.h"
+#include "MemoryManage/Framedata.h"
 #include "Constant/VideoConstants.h"
 
 class ScreenCapture
@@ -14,7 +14,7 @@ public:
 
 	ScreenCapture(int color_bits = BYTE_PER_PIXEL, int pixel_width = DEFALUT_WIDTH, int pixel_height = DEFALUT_HEIGHT);
 
-	virtual std::shared_ptr<FrameData> CaptureCurrentScreen() = 0;
+	virtual std::shared_ptr<VideoFrameData> CaptureCurrentScreen() = 0;
 
 	int getWidth() const;
 

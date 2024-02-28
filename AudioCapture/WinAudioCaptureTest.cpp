@@ -1,54 +1,11 @@
-/*
-   This code was written with reference to the following source.
-   source 1: https://learn.microsoft.com/en-us/windows/win32/coreaudio/loopback-recording?redirectedfrom=MSDN
-   source 2: https://www.hagulu.com/150
-   source 3: https://ffmpeg.org/doxygen/trunk/encode_audio_8c-example.html#a27
-*/
-
-//-----------------------------------------------------------
-// Record an audio stream from the default audio capture
-// device. The RecordAudioStream function allocates a shared
-// buffer big enough to hold one second of PCM audio data.
-// The function uses this buffer to stream data from the
-// capture device. The main loop runs every 1/2 second.
-//-----------------------------------------------------------
-
-// REFERENCE_TIME time units per second and per millisecond
-
 #define _CRT_SECURE_NO_WARNINGS
 
-extern "C" {
-#include <libavformat/avformat.h>
-#include <libavcodec/avcodec.h>
-#include <libavutil/imgutils.h>
-#include <libswscale/swscale.h>
-#include <libswresample/swresample.h>
-}
+#include "AudioCapture/WinAudioCapture.h"
 
-
-#include <windows.h>
-#include <mmdeviceapi.h>
-#include <audioclient.h>
-
-#include <iostream>
-#include <queue>
+using namespace std;
 
 #define RECORD_TIME 30
 #define BYTE_PER_SAMPLE 4
-
-#define REFTIMES_PER_SEC  10000000
-#define REFTIMES_PER_MILLISEC  10000
-
-#define EXIT_ON_ERROR(hres)  \
-              if (FAILED(hres)) { goto Exit; }
-#define SAFE_RELEASE(punk)  \
-              if ((punk) != NULL)  \
-                { (punk)->Release(); (punk) = NULL; }
-
-const CLSID CLSID_MMDeviceEnumerator = __uuidof(MMDeviceEnumerator);
-const IID IID_IMMDeviceEnumerator = __uuidof(IMMDeviceEnumerator);
-const IID IID_IAudioClient = __uuidof(IAudioClient);
-const IID IID_IAudioCaptureClient = __uuidof(IAudioCaptureClient);
 
 // Write ADTS Header
 constexpr int ADTS_HEADER_SIZE = 7;   // ADTS Header Size : 7 byte
@@ -59,14 +16,11 @@ constexpr int SAMPLE_RATE_2 = 3;        // Sampling Frequencies : 48000 Hz
 constexpr int CHANNELS = 2;           // Channel Configurations : 2
 uint8_t adts_data[7];
 
-FILE* raw;
-
-using namespace std;
-
 class MyAudioSink
 {
 public:
-	MyAudioSink()
+	MyAudioSink(WinAudioCapture& cap_obj)
+		:cap_obj(cap_obj), raw_data_que(cap_obj.getDataBuffer())
 	{
 		enc_codec = avcodec_find_encoder(AV_CODEC_ID_AAC);
 		if (enc_codec == NULL)
@@ -88,57 +42,18 @@ public:
 			fprintf(stderr, "Could not open %s\n", filename);
 			exit(1);
 		};
-	}
-
-	HRESULT SetFormat(WAVEFORMATEX* pwfx)
-	{
-		audio_channels = pwfx->nChannels;
-		sample_rate = pwfx->nSamplesPerSec;
-		bit_rate = pwfx->nAvgBytesPerSec * 8;
-		bit_per_sample = pwfx->wBitsPerSample;
-
-		int ret;
-
-		if (pwfx->wFormatTag == WAVE_FORMAT_PCM)
-		{
-			cout << "this source is pcm format" << endl;
-			raw_data_format = AV_SAMPLE_FMT_S16;
-
-		}
-		else if (pwfx->wFormatTag == WAVE_FORMAT_EXTENSIBLE)
-		{
-			WAVEFORMATEXTENSIBLE* pWfxExtensible = reinterpret_cast<WAVEFORMATEXTENSIBLE*>(pwfx);
-			pWfxExtensible->Format.wFormatTag;
-			bit_per_sample = pWfxExtensible->Samples.wValidBitsPerSample;
-			sample_per_block = pWfxExtensible->Samples.wSamplesPerBlock;
-			if (IsEqualGUID(pWfxExtensible->SubFormat, KSDATAFORMAT_SUBTYPE_PCM))
-			{
-				cout << "this source is pcm format" << endl;
-				raw_data_format = AV_SAMPLE_FMT_S16;
-			}
-			else if (IsEqualGUID(pWfxExtensible->SubFormat, KSDATAFORMAT_SUBTYPE_IEEE_FLOAT))
-			{
-				cout << "this source is not pcm format: KSDATAFORMAT_SUBTYPE_IEEE_FLOAT" << endl;
-				raw_data_format = AV_SAMPLE_FMT_FLT;
-			}
-			else
-			{
-				cout << "this source is not pcm format: unknown" << endl;
-				exit(-1);
-			} 
-		}
-		else
-		{
-			cout << "this source is not pcm format: unknown" << endl;
-			exit(-1);
-		}
 
 		/* put sample parameters */
+		audio_channels = cap_obj.getAudioChannels();
+		sample_rate = cap_obj.getAudioSampleRate();
+		bit_per_sample = cap_obj.getAudioSampleSize();
+		raw_data_format = cap_obj.getAudioSampleFormat();
 		enc_context->bit_rate = 576000 * 2;
 
 		/* check that the encoder supports float input */
 		enc_context->sample_fmt = AV_SAMPLE_FMT_FLTP;
-		if (!check_sample_fmt(enc_codec, enc_context->sample_fmt)) {
+		if (!check_sample_fmt(enc_codec, enc_context->sample_fmt)) 
+		{
 			fprintf(stderr, "Encoder does not support sample format %s",
 				av_get_sample_fmt_name(enc_context->sample_fmt));
 			exit(1);
@@ -146,12 +61,12 @@ public:
 
 		/* select other audio parameters supported by the encoder */
 		enc_context->sample_rate = select_sample_rate(enc_codec, sample_rate);
-		ret = select_channel_layout(enc_codec, &enc_context->ch_layout, audio_channels);
-		if (ret < 0)
+		if (select_channel_layout(enc_codec, &enc_context->ch_layout, audio_channels) < 0)
 			exit(1);
 
 		/* open it */
-		if (avcodec_open2(enc_context, enc_codec, NULL) < 0) {
+		if (avcodec_open2(enc_context, enc_codec, NULL) < 0) 
+		{
 			fprintf(stderr, "Could not open codec\n");
 			exit(1);
 		}
@@ -167,7 +82,7 @@ public:
 		int out_channels = audio_channels;
 
 		// Create audio conversion context
-		ret = swr_alloc_set_opts2(&swr_ctx,
+		int ret = swr_alloc_set_opts2(&swr_ctx,
 			&enc_context->ch_layout,
 			out_sample_fmt,
 			out_sample_rate,
@@ -176,41 +91,23 @@ public:
 			in_sample_rate,
 			0,
 			NULL);
+		if (swr_ctx == NULL)
+		{
+			cout << "swr_alloc_set_opts2 fail" << endl;
+			exit(ret);
+		}
+
 		swr_init(swr_ctx);
-
-		return ret;
-	}
-
-	HRESULT CopyData(BYTE* data, UINT32 frame_num, BOOL* done)
-	{
-		static UINT32 frame_sum = 0;
-		frame_sum += frame_num;
-		if (frame_sum / enc_context->sample_rate >= RECORD_TIME)
-			*done = TRUE;
-		else
-			*done = FALSE;
-
-		cout << frame_num << ' ';
-		//caputre raw data
-		fwrite(data, 1, frame_num * BYTE_PER_SAMPLE * audio_channels, raw);
-
-		static uint8_t* buf = NULL;
-		int buf_size = frame_num * BYTE_PER_SAMPLE * audio_channels;
-		buf = new uint8_t[buf_size];
-		memcpy(buf, data, buf_size);
-
-		raw_data_que.push(make_pair(buf, (int)frame_num));
-
-		return 0;
 	}
 
 	void RearrangeData()
 	{
+		static double record_time = 0;
 		static AVFrame* frame = NULL;
 		static size_t packet_blank_size;
 		static size_t rest_frame_size;
 		static size_t current_frame_size;
-		static uint8_t* current_frame_ptr = NULL;
+		static shared_ptr<AudioFrameData> raw_data;
 		static uint8_t* tem_buf;
 		tem_buf = new uint8_t[enc_context->frame_size * BYTE_PER_SAMPLE * audio_channels];
 
@@ -240,27 +137,26 @@ public:
 
 		/* allocate the data buffers */
 		int ret;
+		int frame_size = cap_obj.getAudioSampleSize() * cap_obj.getAudioChannels();
 
 		rest_frame_size = 0;
 		create_frame();
 
-		while (!raw_data_que.empty())
+		BYTE* current_frame_ptr;
+		while (record_time < RECORD_TIME && raw_data_que.size() != 0)
 		{
 			if (rest_frame_size == 0)
 			{
-				if (current_frame_ptr != NULL)
-				{
-					delete[] raw_data_que.front().first;
-					raw_data_que.pop();
-					if (raw_data_que.empty())
-						break;
-				}
-				current_frame_ptr = raw_data_que.front().first;
-				current_frame_size = raw_data_que.front().second;
+				//while(!raw_data_que.wait_and_pop_utill_not_empty(raw_data));
+				raw_data_que.pop(raw_data);
+				int sample_num = raw_data.get()->getMemSize() / frame_size;
+				record_time += (double)sample_num / cap_obj.getAudioSampleRate();
+				current_frame_ptr = raw_data.get()->getMemPointer();
+				current_frame_size = sample_num;
 				rest_frame_size = current_frame_size;
 			}
 
-			current_frame_ptr = raw_data_que.front().first + ((current_frame_size - rest_frame_size) * BYTE_PER_SAMPLE * audio_channels);
+			current_frame_ptr = raw_data.get()->getMemPointer() + ((current_frame_size - rest_frame_size) * BYTE_PER_SAMPLE * audio_channels);
 			auto packet_blank_start_ptr = tem_buf + ((enc_context->frame_size - packet_blank_size) * BYTE_PER_SAMPLE * audio_channels);
 
 			if (packet_blank_size > rest_frame_size)
@@ -274,6 +170,7 @@ public:
 				memcpy(packet_blank_start_ptr, current_frame_ptr, packet_blank_size * BYTE_PER_SAMPLE * audio_channels);
 				rest_frame_size -= packet_blank_size;
 				packet_blank_size = 0;
+
 				// audio transform
 				ret = swr_convert(swr_ctx, &frame->data[0], enc_context->frame_size, (const uint8_t**)&tem_buf, enc_context->frame_size);
 				if (ret < 0) {
@@ -292,8 +189,6 @@ public:
 
 	void EncodeData()
 	{
-		RearrangeData();
-
 		int ret = 0;
 
 		/* send the frame for encoding */
@@ -335,6 +230,7 @@ private:
 	AVCodecContext* enc_context;
 
 	SwrContext* swr_ctx;
+	WinAudioCapture& cap_obj;
 
 	int audio_channels;
 	int sample_rate;
@@ -343,7 +239,7 @@ private:
 	int sample_per_block;
 	AVSampleFormat raw_data_format;
 
-	queue<pair<uint8_t*, int>> raw_data_que;
+	MutexQueue<std::shared_ptr<AudioFrameData>>& raw_data_que;
 	queue<AVFrame*> frame_que;
 
 	void WriteAudioFile()
@@ -473,131 +369,16 @@ private:
 	}
 };
 
-HRESULT RecordAudioStream(MyAudioSink* pMySink)
+int main(void)
 {
-	HRESULT hr;
-	REFERENCE_TIME hnsRequestedDuration = REFTIMES_PER_SEC;
-	REFERENCE_TIME hnsActualDuration;
-	UINT32 bufferFrameCount;
-	UINT32 numFramesAvailable;
-	IMMDeviceEnumerator* pEnumerator = NULL;
-	IMMDevice* pDevice = NULL;
-	IAudioClient* pAudioClient = NULL;
-	IAudioCaptureClient* pCaptureClient = NULL;
-	WAVEFORMATEX* pwfx = NULL;
-	UINT32 packetLength = 0;
-	BOOL bDone = FALSE;//decide loop continue
-	BYTE* pData;//GetBuffer return 
-	DWORD flags;//GetBuffer result flag 
+	WinAudioCapture win_cap;
+	MyAudioSink audio_sink(win_cap);
+	win_cap.StartCapture();
+	Sleep(30000);
+	win_cap.EndCapture();
 
-	hr = CoInitialize(NULL);
-	EXIT_ON_ERROR(hr)
+	audio_sink.RearrangeData();
+	audio_sink.EncodeData();
 
-		hr = CoCreateInstance(
-			CLSID_MMDeviceEnumerator, NULL,
-			CLSCTX_ALL, IID_IMMDeviceEnumerator,
-			(void**)&pEnumerator);
-	EXIT_ON_ERROR(hr)
-
-		hr = pEnumerator->GetDefaultAudioEndpoint(
-			eRender, eConsole, &pDevice);
-	EXIT_ON_ERROR(hr)
-
-		hr = pDevice->Activate(
-			IID_IAudioClient, CLSCTX_ALL,
-			NULL, (void**)&pAudioClient);
-	EXIT_ON_ERROR(hr)
-
-		hr = pAudioClient->GetMixFormat(&pwfx);
-	EXIT_ON_ERROR(hr)
-
-		hr = pAudioClient->Initialize(
-			AUDCLNT_SHAREMODE_SHARED,
-			AUDCLNT_STREAMFLAGS_LOOPBACK,
-			hnsRequestedDuration,
-			0,
-			pwfx,
-			NULL);
-	EXIT_ON_ERROR(hr)
-
-		// Get the size of the allocated buffer.
-		hr = pAudioClient->GetBufferSize(&bufferFrameCount);
-	EXIT_ON_ERROR(hr)
-
-		hr = pAudioClient->GetService(
-			IID_IAudioCaptureClient,
-			(void**)&pCaptureClient);
-	EXIT_ON_ERROR(hr)
-
-		// Notify the audio sink which format to use.
-		hr = pMySink->SetFormat(pwfx);
-	EXIT_ON_ERROR(hr)
-
-		// Calculate the actual duration of the allocated buffer.
-		hnsActualDuration = (double)REFTIMES_PER_SEC *
-		bufferFrameCount / pwfx->nSamplesPerSec;
-
-	hr = pAudioClient->Start();  // Start recording.
-	EXIT_ON_ERROR(hr)
-
-		// Each loop fills about half of the shared buffer.
-		while (bDone == FALSE)
-		{
-			// Sleep for half the buffer duration.
-			DWORD sleep_time = hnsActualDuration / REFTIMES_PER_MILLISEC / 2;
-			//DWORD sleep_time = 10000;
-			Sleep(sleep_time);
-
-			hr = pCaptureClient->GetNextPacketSize(&packetLength);//The client calls GetNextPacketSize before each pair of calls to GetBuffer and ReleaseBuffer until GetNextPacketSize reports a packet size of 0
-			EXIT_ON_ERROR(hr)
-
-				while (packetLength != 0)
-				{
-					// Get the available data in the shared buffer.
-					hr = pCaptureClient->GetBuffer(
-						&pData,
-						&numFramesAvailable,
-						&flags, NULL, NULL);
-					EXIT_ON_ERROR(hr)
-
-						if (flags & AUDCLNT_BUFFERFLAGS_SILENT)
-						{
-							pData = NULL;  // Tell CopyData to write silence.
-						}
-
-					// Copy the available capture data to the audio sink.
-					hr = pMySink->CopyData(
-						pData, numFramesAvailable, &bDone);
-					EXIT_ON_ERROR(hr)
-
-						hr = pCaptureClient->ReleaseBuffer(numFramesAvailable);//Release the buffer obtained by GetBuffer
-					EXIT_ON_ERROR(hr)
-
-						hr = pCaptureClient->GetNextPacketSize(&packetLength);//The client calls GetNextPacketSize before each pair of calls to GetBuffer and ReleaseBuffer until GetNextPacketSize reports a packet size of 0
-					EXIT_ON_ERROR(hr)
-				}
-		}
-
-	hr = pAudioClient->Stop();  // Stop recording.
-	EXIT_ON_ERROR(hr)
-		pMySink->EncodeData();
-
-Exit:
-	CoTaskMemFree(pwfx);
-	SAFE_RELEASE(pEnumerator)
-		SAFE_RELEASE(pDevice)
-		SAFE_RELEASE(pAudioClient)
-		SAFE_RELEASE(pCaptureClient)
-
-		return hr;
-}
-
-int main()
-{
-	const char* filename = "raw_data.bin";
-	raw = fopen(filename, "wb");
-	MyAudioSink audio;
-	auto ret = RecordAudioStream(&audio);
-	fclose(raw);
-	return ret;
+	return 0;
 }

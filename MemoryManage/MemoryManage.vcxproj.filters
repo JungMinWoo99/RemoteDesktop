@@ -27,6 +27,12 @@
     <ClCompile Include="..\src\MemoryManage\PacketData.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\MemoryManage\PixFmtConverter.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\MemoryManage\FrameData.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\MemoryManage\AVFrameManage.h">
@@ -39,6 +45,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\header\MemoryManage\PacketData.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\MemoryManage\FrameData.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\MemoryManage\PixFmtConverter.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

@@ -61,7 +61,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>MutexQueue.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MutexQueue.obj;FrameData.obj;PixFmtConverter.obj;%(AdditionalDependencies)</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>%(IgnoreSpecificDefaultLibraries)</IgnoreSpecificDefaultLibraries>
     </Link>
   </ItemDefinitionGroup>
@@ -81,14 +81,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalLibraryDirectories>C:\Users\qqdld\Desktop\Dev\RemoteDesktop;%BOOST_LIB%;%OPENCV_LIB%;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>MutexQueue.obj;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>MutexQueue.obj;FrameData.obj;PixFmtConverter.obj;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\header\ExternCode\DXGIManager\DXGIManager.cpp" />
     <ClCompile Include="..\src\ScreenCapture\DirectXScreenCapture.cpp" />
-    <ClCompile Include="..\src\ScreenCapture\FrameData.cpp" />
-    <ClCompile Include="..\src\ScreenCapture\PixFmtConverter.cpp" />
     <ClCompile Include="..\src\ScreenCapture\ScreenCapture.cpp" />
     <ClCompile Include="..\src\ScreenCapture\ScreenDataBuffer.cpp" />
     <ClCompile Include="..\src\ScreenCapture\WinScreenCapture.cpp" />
@@ -108,8 +106,6 @@
   <ItemGroup>
     <ClInclude Include="..\header\ExternCode\DXGIManager\DXGIManager.h" />
     <ClInclude Include="..\header\ScreenCapture\DirectXScreenCapture.h" />
-    <ClInclude Include="..\header\ScreenCapture\FrameData.h" />
-    <ClInclude Include="..\header\ScreenCapture\PixFmtConverter.h" />
     <ClInclude Include="..\header\ScreenCapture\ScreenCapture.h" />
     <ClInclude Include="..\header\ScreenCapture\ScreenDataBuffer.h" />
     <ClInclude Include="..\header\ScreenCapture\WinScreenCapture.h" />

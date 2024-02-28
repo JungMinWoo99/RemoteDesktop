@@ -14,7 +14,7 @@ AVFrameHandlerThread::AVFrameHandlerThread(FrameDecoder& decoder, AVFrameProcess
 	int bytes_per_pixel = av_get_bits_per_pixel(av_pix_fmt_desc_get(pix_fmt));
 	int mem_size = c_context->width * c_context->height* bytes_per_pixel;
 
-	recent_frame = make_shared<FrameData>(mem_size);
+	recent_frame = make_shared<VideoFrameData>(mem_size);
 }
 
 void AVFrameHandlerThread::StartHandle()

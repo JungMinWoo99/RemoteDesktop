@@ -1,5 +1,5 @@
 #include <memory>
-#include "ScreenCapture/FrameData.h"
+#include "MemoryManage/Framedata.h"
 
 class ScreenPrinter abstract
 {
@@ -9,6 +9,6 @@ public:
 
 protected:
 	ScreenPrinter(int w, int h) :w(w), h(h) {};
-	virtual void PrintFrame(std::shared_ptr<FrameData> frame) abstract;
+	virtual void PrintFrame(std::shared_ptr<VideoFrameData> frame) abstract;
 	int w, h;
 };

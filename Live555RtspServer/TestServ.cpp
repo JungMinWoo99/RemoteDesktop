@@ -1,7 +1,7 @@
 #include "Live555RtspServer/RtspServerContext.h"
 #include "MultiThreadFrameGetter/CaptureThread.h"
 #include "MultiThreadFrameGetter/PeriodicDataCollector.h"
-#include "ScreenCapture/PixFmtConverter.h"
+#include "MemoryManage/PixFmtConverter.h"
 #include "FramePacketizer/FrameEncoder.h"
 #include "FramePacketizer/AVFrameManage.h"
 #include "FramePacketizer/CoderThread/EncoderThread.h"
@@ -49,7 +49,7 @@ int main(void)
 	auto serv_run = [&]() {rtsp_serv.Run(); };
 	thread serv_thr(serv_run);
 
-	std::shared_ptr<FrameData> frame;
+	std::shared_ptr<VideoFrameData> frame;
 
 	bool is_stream = true;
 	while (is_stream)

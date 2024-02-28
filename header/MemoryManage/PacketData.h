@@ -7,9 +7,11 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
+#include "ResourceMonitor/CountableResource.h"
+
 #include <Windows.h>
 
-class PacketData
+class PacketData: public CountableResource<PacketData>
 {
 public:
 	PacketData(const AVPacket* packet);
