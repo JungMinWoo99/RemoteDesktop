@@ -14,17 +14,26 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
     <Filter Include="TestCode">
-      <UniqueIdentifier>{c8222fbc-41c6-4709-8830-4f5e6499d3de}</UniqueIdentifier>
+      <UniqueIdentifier>{95fd1753-fe4f-44ec-8723-8827e9aab162}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\header\AudioPacketizer\AudioEncoder.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\src\AudioPacketizer\AudioEncoder.cpp">
+    <ClCompile Include="..\src\VideoPacketizer\VideoDecoder.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\VideoPacketizer\VideoEncoder.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoEncoderTest.cpp">
+      <Filter>TestCode</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\header\VideoPacketizer\VideoDecoder.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\VideoPacketizer\VideoEncoder.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

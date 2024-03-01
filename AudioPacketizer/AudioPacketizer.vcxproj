@@ -10,6 +10,12 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\header\AudioPacketizer\AudioEncoder.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\AudioPacketizer\AudioEncoder.cpp" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

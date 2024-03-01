@@ -20,31 +20,38 @@ extern "C" {
 class FrameEncoder
 {
 public:
+	FrameEncoder(std::string encoder_name);
+
 	FrameEncoder(int w = DEFALUT_WIDTH, int h = DEFALUT_HEIGHT, int frame_rate = DEFALUT_FRAME_RATE, AVCodecID coedec_id = AV_CODEC_ID_H264);
 	
-	_Check_return_ bool EncodeFrame(std::shared_ptr<SharedAVFrame> input);
+	_Check_return_ virtual bool EncodeFrame(std::shared_ptr<SharedAVFrame> input) final;
 
-	_Check_return_ bool SendPacket(std::shared_ptr<SharedAVPacket>& packet);
+	_Check_return_ virtual bool SendPacket(std::shared_ptr<SharedAVPacket>& packet) final;
 
-	_Check_return_ bool SendPacketBlocking(std::shared_ptr<SharedAVPacket>& packet);
+	_Check_return_ virtual bool SendPacketBlocking(std::shared_ptr<SharedAVPacket>& packet) final;
 
-	void FlushContext();
+	virtual void FlushContext() final;
 
-	const AVCodec* getEncCodec();
+	virtual const AVCodec* getEncCodec() final;
 
-	AVCodecContext* getEncCodecContext();
+	virtual AVCodecContext* getEncCodecContext()final;
 
-	size_t getBufferSize();
+	virtual size_t getBufferSize() final;
 
-	~FrameEncoder();
+	virtual ~FrameEncoder();
 
-private:
-	_Check_return_ bool FillPacketBuf();
+protected:
+	virtual void PrintLog(std::string log) final;
 
 	static std::ofstream log_stream;
 
 	const AVCodec* enc_codec;
 	AVCodecContext* enc_context;
+
+	int frame_rate;
+
+private:
+	_Check_return_ bool FillPacketBuf();
 
 	AVStructPool<AVPacket*>& empty_packet_buf = AVStructPool<AVPacket*>::getInstance();
 
@@ -52,5 +59,5 @@ private:
 
 	std::mutex encoder_mtx;
 
-	int frame_rate;
+	std::string encoder_name;
 };

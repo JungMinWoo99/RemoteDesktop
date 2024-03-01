@@ -143,12 +143,11 @@ public:
 		create_frame();
 
 		BYTE* current_frame_ptr;
-		while (record_time < RECORD_TIME && raw_data_que.size() != 0)
+		while (record_time < RECORD_TIME/*&& raw_data_que.size() != 0*/)
 		{
 			if (rest_frame_size == 0)
 			{
-				//while(!raw_data_que.wait_and_pop_utill_not_empty(raw_data));
-				raw_data_que.pop(raw_data);
+				while(!raw_data_que.wait_and_pop_utill_not_empty(raw_data));
 				int sample_num = raw_data.get()->getMemSize() / frame_size;
 				record_time += (double)sample_num / cap_obj.getAudioSampleRate();
 				current_frame_ptr = raw_data.get()->getMemPointer();
@@ -374,10 +373,8 @@ int main(void)
 	WinAudioCapture win_cap;
 	MyAudioSink audio_sink(win_cap);
 	win_cap.StartCapture();
-	Sleep(30000);
-	win_cap.EndCapture();
-
 	audio_sink.RearrangeData();
+	win_cap.EndCapture();
 	audio_sink.EncodeData();
 
 	return 0;

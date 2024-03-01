@@ -50,6 +50,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Live555RtspClient", "Live55
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioPacketizer", "AudioPacketizer\AudioPacketizer.vcxproj", "{82B7FA51-CF32-4CE7-BA42-CCAF23854CA6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{414E1030-F196-4A7A-A440-0FE413172E4A} = {414E1030-F196-4A7A-A440-0FE413172E4A}
+		{645BC3DE-FEA4-4A34-8B9C-A7C774132519} = {645BC3DE-FEA4-4A34-8B9C-A7C774132519}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AudioCapture", "AudioCapture\AudioCapture.vcxproj", "{414E1030-F196-4A7A-A440-0FE413172E4A}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -60,6 +64,12 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MemoryManage", "MemoryManag
 	ProjectSection(ProjectDependencies) = postProject
 		{4C205593-11AC-40CC-BCA6-3EC46BBE1FFF} = {4C205593-11AC-40CC-BCA6-3EC46BBE1FFF}
 		{9B335A31-996C-4120-9CCB-4ECEF5096712} = {9B335A31-996C-4120-9CCB-4ECEF5096712}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VideoPacketizer", "VideoPacketizer\VideoPacketizer.vcxproj", "{4EE21092-BD69-42AC-BB1E-C873C1890CE8}"
+	ProjectSection(ProjectDependencies) = postProject
+		{645BC3DE-FEA4-4A34-8B9C-A7C774132519} = {645BC3DE-FEA4-4A34-8B9C-A7C774132519}
+		{9F73FB12-7412-4509-BD1E-39AFF5903745} = {9F73FB12-7412-4509-BD1E-39AFF5903745}
 	EndProjectSection
 EndProject
 Global
@@ -153,6 +163,12 @@ Global
 		{699B1A03-564B-4669-B14D-2D7530F0EC6A}.Release|x64.ActiveCfg = Release|x64
 		{699B1A03-564B-4669-B14D-2D7530F0EC6A}.Release|x64.Build.0 = Release|x64
 		{699B1A03-564B-4669-B14D-2D7530F0EC6A}.Release|x86.ActiveCfg = Release|x64
+		{4EE21092-BD69-42AC-BB1E-C873C1890CE8}.Debug|x64.ActiveCfg = Debug|x64
+		{4EE21092-BD69-42AC-BB1E-C873C1890CE8}.Debug|x64.Build.0 = Debug|x64
+		{4EE21092-BD69-42AC-BB1E-C873C1890CE8}.Debug|x86.ActiveCfg = Debug|x64
+		{4EE21092-BD69-42AC-BB1E-C873C1890CE8}.Release|x64.ActiveCfg = Release|x64
+		{4EE21092-BD69-42AC-BB1E-C873C1890CE8}.Release|x64.Build.0 = Release|x64
+		{4EE21092-BD69-42AC-BB1E-C873C1890CE8}.Release|x86.ActiveCfg = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -1,16 +1,15 @@
 #include "FramePacketizer/FrameEncoder.h"
 
-
 #include <iostream>
-
-#define DEFALUT_SEGMENT_SEC 1
-#define DEFALUT_TIME_BASE_UNIT 1000
-#define DEFALUT_PIX_FMT AV_PIX_FMT_YUV420P
-#define GOP_SIZE 30
 
 using namespace std;
 
 std::ofstream FrameEncoder::log_stream("encoder_log.txt", std::ios::out | std::ios::trunc);
+
+FrameEncoder::FrameEncoder(string encoder_name)
+	:encoder_name(encoder_name),enced_packet_buf(encoder_name.c_str())
+{
+}
 
 FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 	:frame_rate(frame_rate),enced_packet_buf("FrameEncoder")
@@ -168,6 +167,11 @@ FrameEncoder::~FrameEncoder()
 	avcodec_free_context(&enc_context);
 }
 
+void FrameEncoder::PrintLog(std::string log)
+{
+	log_stream << encoder_name<< ":" << log << endl;
+}
+
 void FrameEncoder::FlushContext()
 {
 	avcodec_send_frame(enc_context, NULL);
@@ -194,14 +198,14 @@ _Check_return_ bool FrameEncoder::FillPacketBuf()
 			//output is not available in the current state - user must try to send input
 		}
 		else if (error_code == AVERROR_EOF)
-			log_stream << "end of encoder" << endl;
+			PrintLog("end of encoder");
 		else if (error_code == AVERROR(EINVAL))
-			log_stream << "codec not opened" << endl;
+			PrintLog("codec not opened");
 		else
 		{
 			char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
 			av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, error_code);
-			log_stream << "avcodec_receive_packet() fail: " << errorStr << endl;
+			PrintLog(std::format("avcodec_receive_packet() fail: {}", errorStr));
 			exit(error_code);
 		}
 		ret = false;
