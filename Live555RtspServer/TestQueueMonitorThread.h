@@ -1,6 +1,6 @@
 #pragma once
 #include "MutexQueue/MutexQueue.h"
-#include "ResourceMonitor/CountableResource.h"
+#include "MemoryManage/CountableResource.h"
 #include "MemoryManage/Framedata.h"
 #include "MemoryManage/AVStructPool.h"
 

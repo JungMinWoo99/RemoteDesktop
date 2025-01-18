@@ -7,7 +7,7 @@ extern "C" {
 #include <libswscale/swscale.h>
 }
 
-#include "ResourceMonitor/CountableResource.h"
+#include "MemoryManage/CountableResource.h"
 
 #include <Windows.h>
 

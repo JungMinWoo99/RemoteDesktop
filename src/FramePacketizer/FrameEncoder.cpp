@@ -7,87 +7,10 @@ using namespace std;
 std::ofstream FrameEncoder::log_stream("encoder_log.txt", std::ios::out | std::ios::trunc);
 
 FrameEncoder::FrameEncoder(string encoder_name)
-	:encoder_name(encoder_name),enced_packet_buf(encoder_name.c_str())
+	:encoder_name(encoder_name),enced_packet_buf(encoder_name) 
 {
-}
-
-FrameEncoder::FrameEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
-	:frame_rate(frame_rate),enced_packet_buf("FrameEncoder")
-{
-	int ret;
-
-	enc_codec = avcodec_find_encoder(coedec_id);
-	if (enc_codec == NULL)
-	{
-		log_stream << "find_encoder fail" << endl;
-		exit(-1);
-	}
-
-	enc_context = avcodec_alloc_context3(enc_codec);
-	if (enc_context == NULL)
-	{
-		log_stream << "alloc encoder context fail" << endl;
-		exit(-1);
-	}
-
-	enc_context->width = w;
-	enc_context->height = h;
-	enc_context->time_base = { 1, frame_rate };
-	enc_context->framerate = { frame_rate, 1 };
-	enc_context->gop_size = GOP_SIZE;
-	enc_context->pix_fmt = DEFALUT_PIX_FMT;
-	enc_context->bit_rate = RECOMMAND_BIT_RATE;
-	enc_context->max_b_frames = 1; // no b frame
-	enc_context->codec_type = AVMEDIA_TYPE_VIDEO;
-	enc_context->flags |= AV_CODEC_FLAG_QSCALE;
-	enc_context->rc_buffer_size = enc_context->rc_max_rate;
-
-	int error_code;
-	error_code = av_opt_set(enc_context->priv_data, "preset", "ultrafast", 0);
-	if (error_code < 0)
-	{
-		if (error_code == AVERROR_OPTION_NOT_FOUND)
-			log_stream << "AVERROR_OPTION_NOT_FOUND" << endl;
-		else if(error_code == AVERROR(ERANGE))
-			log_stream << "Out of range" << endl;
-		else if (error_code == AVERROR(EINVAL))
-			log_stream << "wrong value" << endl;
-		else
-			log_stream << "av_opt_set fail" << endl;
-	}
-	error_code = av_opt_set(enc_context->priv_data, "tune", "zerolatency", 0);
-	if (error_code < 0)
-	{
-		if (error_code == AVERROR_OPTION_NOT_FOUND)
-			log_stream << "AVERROR_OPTION_NOT_FOUND" << endl;
-		else if (error_code == AVERROR(ERANGE))
-			log_stream << "Out of range" << endl;
-		else if (error_code == AVERROR(EINVAL))
-			log_stream << "wrong value" << endl;
-		else
-			log_stream << "av_opt_set fail" << endl;
-	}
-	error_code = av_opt_set(enc_context->priv_data, "crf", "23", 0);
-	if (error_code < 0)
-	{
-		if (error_code == AVERROR_OPTION_NOT_FOUND)
-			log_stream << "AVERROR_OPTION_NOT_FOUND" << endl;
-		else if (error_code == AVERROR(ERANGE))
-			log_stream << "Out of range" << endl;
-		else if (error_code == AVERROR(EINVAL))
-			log_stream << "wrong value" << endl;
-		else
-			log_stream << "av_opt_set fail" << endl;
-	}
-
-	ret = avcodec_open2(enc_context, enc_codec, nullptr);
-	if (ret < 0)
-	{
-		char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
-		av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, ret);
-		log_stream << "avcodec_open fail: " << errorStr << endl;
-		exit(ret);
-	}
+	enc_codec = NULL;
+	enc_context = NULL;
 }
 
 _Check_return_ bool FrameEncoder::EncodeFrame(shared_ptr<SharedAVFrame> input)

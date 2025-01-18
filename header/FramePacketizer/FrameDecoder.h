@@ -20,7 +20,7 @@ extern "C" {
 class FrameDecoder
 {
 public:
-	FrameDecoder(int w = DEFALUT_WIDTH, int h = DEFALUT_HEIGHT, int frame_rate = DEFALUT_FRAME_RATE, AVCodecID coedec_id = AV_CODEC_ID_H264);
+	FrameDecoder(std::string decoder_name);
 
 	_Check_return_ bool DecodePacket(std::shared_ptr<SharedAVPacket> input);
 
@@ -35,13 +35,17 @@ public:
 	AVCodecContext* getDecCodecContext();
 
 	~FrameDecoder();
-private:
-	_Check_return_ bool FillFrameBuf();
 
+protected:
 	static std::ofstream log_stream;
 
 	const AVCodec* dec_codec;
 	AVCodecContext* dec_context;
+
+	virtual void PrintLog(std::string log) final;
+
+private:
+	_Check_return_ bool FillFrameBuf();
 
 	AVStructPool<AVFrame*>& empty_frame_buf = AVStructPool<AVFrame*>::getInstance();
 
@@ -49,5 +53,5 @@ private:
 
 	std::mutex decoder_mtx;
 
-	int frame_rate;
+	std::string decoder_name;
 };

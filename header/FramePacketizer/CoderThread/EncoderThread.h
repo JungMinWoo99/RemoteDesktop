@@ -8,7 +8,7 @@
 class AVPacketProcessor abstract
 {
 public:
-	virtual void PacketProcess(AVPacket*) abstract;
+	virtual void PacketProcess(std::shared_ptr<SharedAVPacket>) abstract;
 };
 
 class AVPacketHandlerThread

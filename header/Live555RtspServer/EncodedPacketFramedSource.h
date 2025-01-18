@@ -4,7 +4,7 @@
 #include "liveMedia.hh"
 
 #include "FramePacketizer/FrameEncoder.h"
-#include "FramePacketizer/AVPacketManage.h"
+#include "MemoryManage/AVPacketManage.h"
 #include "FramePacketizer/CoderThread/EncoderThread.h"
 
 class EncodedPacketFramedSource : public FramedSource
@@ -15,7 +15,7 @@ public:
 	public:
 		FramedSourcePacketHandler(EncodedPacketFramedSource* this_ptr);
 
-		virtual void PacketProcess(AVPacket* input);
+		virtual void PacketProcess(std::shared_ptr<SharedAVPacket> input);
 		bool SendPacket(std::shared_ptr<PacketData>& output);
 
 	private:

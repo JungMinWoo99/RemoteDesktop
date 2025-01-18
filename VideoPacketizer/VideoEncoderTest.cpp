@@ -71,7 +71,7 @@ int main(void)
 		return -1;
 	}
 
-	PixFmtConverter pix_fmt_cvt;
+	ImgFmtConverter pix_fmt_cvt;
 	shared_ptr<VideoFrameData> next_frame;
 	shared_ptr<VideoFrameData> prev_frame = nullptr;
 	auto frame = AVStructPool<AVFrame*>::getInstance().getEmptyObj();

@@ -8,7 +8,7 @@
 class AVFrameProcessor abstract
 {
 public:
-	virtual void FrameProcess(AVFrame*) abstract;
+	virtual void FrameProcess(std::shared_ptr<SharedAVFrame>) abstract;
 };
 
 class AVFrameHandlerThread
@@ -21,8 +21,6 @@ public:
 private:
 	FrameDecoder& decoder;
 	AVFrameProcessor& proc_obj;
-	
-	std::shared_ptr<VideoFrameData> recent_frame;
 
 	std::thread proc_thread;
 

@@ -6,14 +6,14 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <ObjectFileName>$(SolutionDir)obj_release\</ObjectFileName>
-      <AdditionalIncludeDirectories>$(SolutionDir)header\;%_FFMPEG_INCLUDE%;%_OPENSSL_INCLUDE%;%_LIVE555_INCLUDE%;%_PORTAUDIO_INCLUDE%</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)header\;%_FFMPEG_INCLUDE%;%_OPENSSL_INCLUDE%;%_LIVE555_INCLUDE%;%_PORTAUDIO_INCLUDE%;%_BOOST_INCLUDE%</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PreprocessorDefinitions>_HAS_STD_BYTE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)obj_release;%_OPENSSL_LIB%\MT;%_FFMPEG_LIB%;%_LIVE555_LIB%;%_PORTAUDIO_LIB%;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\Release;%_OPENSSL_LIB%\MT;%_FFMPEG_LIB%;%_LIVE555_LIB%;%_PORTAUDIO_LIB%;%_BOOST_LIB%;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swscale.lib;swresample.lib;GDI32.lib;user32.lib;d3d11.lib;gdiplus.lib;dxgi.lib;ws2_32.lib;libBasicUsageEnvironment.lib;libgroupsock.lib;libliveMedia.lib;libUsageEnvironment.lib;portaudio_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <LinkTimeCodeGeneration>UseLinkTimeCodeGeneration</LinkTimeCodeGeneration>
     </Link>

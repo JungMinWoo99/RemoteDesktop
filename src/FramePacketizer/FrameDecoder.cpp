@@ -10,45 +10,11 @@ using namespace std;
 
 std::ofstream FrameDecoder::log_stream("decoder_log.txt", std::ios::out | std::ios::trunc);
 
-FrameDecoder::FrameDecoder(int w, int h, int frame_rate, AVCodecID coedec_id)
-	:frame_rate(frame_rate), deced_frame_buf("FrameDecoder")
+FrameDecoder::FrameDecoder(std::string decoder_name)
+	:decoder_name(decoder_name), deced_frame_buf(decoder_name)
 {
-	int ret;
-
-	dec_codec = avcodec_find_decoder(coedec_id);
-	if (dec_codec == NULL)
-	{
-		log_stream << "avcodec_find_decoder fail" << endl;
-		exit(-1);
-	}
-	dec_context = avcodec_alloc_context3(dec_codec);
-	if (dec_context == NULL)
-	{
-		log_stream << "avcodec_alloc_context fail" << endl;
-		exit(-1);
-	}
-
-	dec_context->codec_tag = MKTAG('a', 'v', 'c', '1');
-	dec_context->width = w;
-	dec_context->height = h;
-	dec_context->codec_id = coedec_id;
-	dec_context->pix_fmt = DEFALUT_PIX_FMT;
-	dec_context->codec_type = AVMEDIA_TYPE_VIDEO;
-	dec_context->field_order = AV_FIELD_PROGRESSIVE;
-	dec_context->lowres = 0;
-	dec_context->skip_loop_filter = AVDISCARD_NONE;
-	dec_context->skip_idct = AVDISCARD_NONE;
-	dec_context->skip_frame = AVDISCARD_NONE;
-	dec_context->pkt_timebase = { 1, frame_rate };
-
-	ret = avcodec_open2(dec_context, dec_codec, nullptr);
-	if (ret < 0)
-	{
-		char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
-		av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, ret);
-		log_stream << "avcodec_open2 fail: " << errorStr << endl;
-		exit(ret);
-	}
+	dec_codec = NULL;
+	dec_context = NULL;
 }
 
 _Check_return_ bool FrameDecoder::DecodePacket(std::shared_ptr<SharedAVPacket> input)
@@ -123,6 +89,11 @@ FrameDecoder::~FrameDecoder()
 	avcodec_free_context(&dec_context);
 }
 
+void FrameDecoder::PrintLog(std::string log)
+{
+	log_stream << decoder_name << ":" << log << endl;
+}
+
 void FrameDecoder::FlushContext()
 {
 	avcodec_send_packet(dec_context, NULL);
@@ -149,14 +120,14 @@ _Check_return_ bool FrameDecoder::FillFrameBuf()
 			//output is not available in the current state - user must try to send input
 		}
 		else if (error_code == AVERROR_EOF)
-			log_stream << "nothing to fill" << endl;
+			PrintLog("nothing to fill");
 		else if (error_code == AVERROR(EINVAL))
-			log_stream << "codec not opened" << endl;
+			PrintLog("codec not opened");
 		else
 		{
 			char errorStr[AV_ERROR_MAX_STRING_SIZE] = { 0 };
 			av_make_error_string(errorStr, AV_ERROR_MAX_STRING_SIZE, error_code);
-			log_stream << "avcodec_receive_frame() fail: " << errorStr << endl;
+			PrintLog(std::format("avcodec_receive_frame() fail: {}", errorStr));
 			exit(error_code);
 		}
 		ret = false;
@@ -164,4 +135,3 @@ _Check_return_ bool FrameDecoder::FillFrameBuf()
 
 	return ret;
 }
-

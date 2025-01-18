@@ -92,7 +92,7 @@ int main(void)
 	FrameEncoderThread enc_thr(encoding_obj);
 
 	//frame data process
-	PixFmtConverter pix_fmt_cvt;
+	ImgFmtConverter pix_fmt_cvt;
 	shared_ptr<VideoFrameData> next_frame;
 	shared_ptr<VideoFrameData> prev_frame = nullptr;
 	shared_ptr<SharedAVPacket> packet;

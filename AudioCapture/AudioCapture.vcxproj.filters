@@ -42,12 +42,21 @@
     <ClCompile Include="WinAudioCaptureTest.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
+    <ClCompile Include="decode_audio.cpp">
+      <Filter>TestCode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\AudioCapture\WinAudioChunker.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\AudioCapture\PaAudioCapture.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="..\header\AudioCapture\WinAudioCapture.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="..\header\AudioCapture\WinAudioChunker.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

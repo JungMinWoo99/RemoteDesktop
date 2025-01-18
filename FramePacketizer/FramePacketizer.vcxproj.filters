@@ -48,6 +48,9 @@
     <ClCompile Include="DecoderThreadTest.cpp">
       <Filter>TestCode</Filter>
     </ClCompile>
+    <ClCompile Include="RTSPSendTest.cpp">
+      <Filter>TestCode</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\header\FramePacketizer\FrameDecoder.h">

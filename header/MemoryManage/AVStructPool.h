@@ -6,7 +6,7 @@ extern "C" {
 }
 
 #include "MutexQueue/MutexQueue.h"
-#include "ResourceMonitor/CountableResource.h"
+#include "MemoryManage/CountableResource.h"
 
 #include <memory>
 

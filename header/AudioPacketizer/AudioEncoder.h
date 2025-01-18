@@ -1,49 +1,43 @@
+/*
+   This code was written with reference to the following source.
+   source 1: https://ffmpeg.org/doxygen/trunk/encode_audio_8c-example.html#a27
+*/
+#pragma once
+
+extern "C" {
+#include <libavformat/avformat.h>
+#include <libavcodec/avcodec.h>
+#include <libavutil/imgutils.h>
+#include <libswscale/swscale.h>
+#include <libswresample/swresample.h>
+}
+
 #include <thread>
 
-#include "AudioCapture/WinAudioCapture.h"
-#include "MemoryManage/AVStructPool.h"
+#include "FramePacketizer/FrameEncoder.h"
 
-class AudioEncoder
+class AudioEncoder:public FrameEncoder
 {
 public:
-	AudioEncoder(WinAudioCapture& cap_obj);
+	AudioEncoder(	int audio_channels = 2,
+					int sample_rate = 44100,
+					AVSampleFormat raw_data_format = AV_SAMPLE_FMT_S16,
+					AVCodecID codec_id = AV_CODEC_ID_AAC);
 
-	_Check_return_ bool EncodeFrame(std::shared_ptr<SharedAVFrame> input);
+	SwrContext* swr_ctx;//추후에 다른 클래스에서 처리할 예정
 
-	_Check_return_ bool SendPacket(std::shared_ptr<SharedAVPacket>& packet);
-
-	_Check_return_ bool SendPacketBlocking(std::shared_ptr<SharedAVPacket>& packet);
-
-	void FlushContext();
-
-	const AVCodec* getEncCodec();
-
-	AVCodecContext* getEncCodecContext();
-
-	size_t getBufferSize();
-
-	~AudioEncoder();
 private:
-	_Check_return_ bool FillPacketBuf();
-
-	const AVCodec* enc_codec;
-	AVCodecContext* enc_context;
-
-	static std::ofstream log_stream;
-
-	SwrContext* swr_ctx;
-	WinAudioCapture& cap_obj;
-
 	int audio_channels;
 	int sample_rate;
-	int bit_rate;
-	int bit_per_sample;
-	int sample_per_block;
 	AVSampleFormat raw_data_format;
+	AVCodecID codec_id;
 
-	AVStructPool<AVPacket*>& empty_packet_buf = AVStructPool<AVPacket*>::getInstance();
+	/* check that a given sample format is supported by the encoder */
+	static int check_sample_fmt(const AVCodec* codec, enum AVSampleFormat sample_fmt);
 
-	MutexQueue<std::shared_ptr<SharedAVPacket>> enced_packet_buf;
+	/* just pick the highest supported samplerate */
+	static int select_sample_rate(const AVCodec* codec, int spec_rate = 0);
 
-	std::mutex encoder_mtx;
+	/* select layout with the highest channel count */
+	static int select_channel_layout(const AVCodec* codec, AVChannelLayout* dst, int spec_channels = 0);
 };

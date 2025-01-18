@@ -1,7 +1,8 @@
 /*
    This code was written with reference to the following source.
-   source: https://github.com/chrisrouck/tutorial-cpp-audio-capture
+   source 1: https://learn.microsoft.com/en-us/windows/win32/coreaudio/loopback-recording?redirectedfrom=MSDN
 */
+#pragma once
 
 extern "C" {
 #include <libavformat/avformat.h>

@@ -1,15 +1,16 @@
 #include "MultiThreadFrameGetter/CaptureThread.h"
 #include "MultiThreadFrameGetter/PeriodicDataCollector.h"
 #include "MemoryManage/PixFmtConverter.h"
-#include "FramePacketizer/FrameEncoder.h"
-#include "FramePacketizer/AVFrameManage.h"
+#include "VideoPacketizer/VideoEncoder.h"
+#include "AudioPacketizer/AudioEncoder.h"
+#include "MemoryManage/AVFrameManage.h"
 #include "FramePacketizer/CoderThread/EncoderThread.h"
 #include "TestQueueMonitorThread.h"
 #include "ScreenCapture/DirectXScreenCapture.h"
 
 #include <iostream>
 
-#define STREAM_ADDR_STR "rtp://127.0.0.1:9000/RTPTest"
+#define STREAM_ADDR_STR "rtp://59.17.75.71:27389/mystream"
 
 using namespace std;
 
@@ -19,6 +20,7 @@ public:
 	RTPPacketProcessor(AVFormatContext** formatContext, AVCodecContext** enc_codec_context, AVStream** outStream, FrameEncoder& encoding_buf)
 		:formatContext(formatContext), enc_codec_context(enc_codec_context), outStream(outStream)
 	{
+		avformat_network_init();
 		if (avformat_alloc_output_context2(formatContext, nullptr, "rtp", STREAM_ADDR_STR) < 0)
 		{
 			cout << "avformat_alloc_output_context2 fail" << endl;
@@ -40,14 +42,20 @@ public:
 		(*outStream)->codecpar->width = (*enc_codec_context)->width;
 		(*outStream)->codecpar->height = (*enc_codec_context)->height;
 		(*outStream)->codecpar->format = (*enc_codec_context)->pix_fmt;
+		(*outStream)->codecpar->bit_rate = 9000;
 
 		(*outStream)->avg_frame_rate = (*enc_codec_context)->framerate;
 		(*outStream)->r_frame_rate = (*enc_codec_context)->framerate;
 		(*outStream)->time_base = (*enc_codec_context)->time_base;
 
-		if (avio_open(&(*formatContext)->pb, STREAM_ADDR_STR, AVIO_FLAG_WRITE) < 0)
-			cout << "file open fail" << endl;
-
+		int ret = avio_open(&(*formatContext)->pb, STREAM_ADDR_STR, AVIO_FLAG_WRITE);
+		if (ret < 0)
+		{
+			// ERROR 
+			char errorBuff[80];
+			fprintf(stderr, "Could not open outfile '%s': %s", STREAM_ADDR_STR, av_make_error_string(errorBuff, 80, ret));
+			exit(ret);
+		}
 
 		avformat_write_header(*formatContext, NULL);
 	}
@@ -96,8 +104,8 @@ int main(void)
 	ScreenDataBuffer periodic_buf(10, "Screen Frame Collect Buffer");
 	CaptureThread capture_obj(screen_buf, cap_obj);
 	PeriodicDataCollector clt_obj(screen_buf, periodic_buf);
-	FrameEncoder encoding_obj;
-	PixFmtConverter pix_fmt_cvt;
+	VideoEncoder encoding_obj;
+	ImgFmtConverter pix_fmt_cvt;
 
 	//video stream open
 	AVFormatContext* formatContext = nullptr;

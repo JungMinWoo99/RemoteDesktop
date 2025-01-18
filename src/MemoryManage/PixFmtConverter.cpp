@@ -3,7 +3,7 @@
 
 using namespace std;
 
-PixFmtConverter::PixFmtConverter(int width, int height)
+ImgFmtConverter::ImgFmtConverter(int width, int height)
 	:frame_width(width), frame_height(height)
 {
 	AVPixelFormat bgr_pix_fmt = AV_PIX_FMT_RGB32;
@@ -30,7 +30,7 @@ PixFmtConverter::PixFmtConverter(int width, int height)
 	}
 }
 
-shared_ptr<VideoFrameData> PixFmtConverter::ConvertBGRToYUV(shared_ptr<VideoFrameData> bgr_data)
+shared_ptr<VideoFrameData> ImgFmtConverter::ConvertBGRToYUV(shared_ptr<VideoFrameData> bgr_data)
 {
 	shared_ptr<VideoFrameData> yuv_data = make_shared<VideoFrameData>(bgr_data.get()->getMemSize() / 2 * 3 / BYTE_PER_PIXEL);
 	yuv_data.get()->setCaptureTime(bgr_data.get()->getCaptureTime());
@@ -47,7 +47,7 @@ shared_ptr<VideoFrameData> PixFmtConverter::ConvertBGRToYUV(shared_ptr<VideoFram
 	return yuv_data;
 }
 
-shared_ptr<VideoFrameData> PixFmtConverter::ConvertYUVToBGR(shared_ptr<VideoFrameData> yuv_data)
+shared_ptr<VideoFrameData> ImgFmtConverter::ConvertYUVToBGR(shared_ptr<VideoFrameData> yuv_data)
 {
 
 	shared_ptr<VideoFrameData> bgr_data = make_shared<VideoFrameData>(yuv_data.get()->getMemSize() / 3 * 2 * BYTE_PER_PIXEL);
@@ -65,12 +65,12 @@ shared_ptr<VideoFrameData> PixFmtConverter::ConvertYUVToBGR(shared_ptr<VideoFram
 	return bgr_data;
 }
 
-PixFmtConverter::~PixFmtConverter()
+ImgFmtConverter::~ImgFmtConverter()
 {
 	sws_freeContext(rgb_to_yuv_ctx);
 }
 
-void PixFmtConverter::FlipData(shared_ptr<VideoFrameData> yuv_frame_data)
+void ImgFmtConverter::FlipData(shared_ptr<VideoFrameData> yuv_frame_data)
 {
 	uint8_t* pixel_data_buf = yuv_frame_data.get()->getMemPointer();
 	int buf_row_size = frame_width * BYTE_PER_PIXEL;

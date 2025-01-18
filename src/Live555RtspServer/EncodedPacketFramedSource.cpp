@@ -85,8 +85,9 @@ EncodedPacketFramedSource::FramedSourcePacketHandler::FramedSourcePacketHandler(
 {
 }
 
-void EncodedPacketFramedSource::FramedSourcePacketHandler::PacketProcess(AVPacket* input)
+void EncodedPacketFramedSource::FramedSourcePacketHandler::PacketProcess(shared_ptr<SharedAVPacket> pkt)
 {
+	auto input = pkt.get()->getPointer();
 	if(this_ptr->has_sps_data && this_ptr->has_pps_data)
 	{
 		shared_ptr<PacketData> p_data = ConvertAVPacketToRawWithoutHeader(input);

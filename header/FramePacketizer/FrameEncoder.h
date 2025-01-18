@@ -22,8 +22,6 @@ class FrameEncoder
 public:
 	FrameEncoder(std::string encoder_name);
 
-	FrameEncoder(int w = DEFALUT_WIDTH, int h = DEFALUT_HEIGHT, int frame_rate = DEFALUT_FRAME_RATE, AVCodecID coedec_id = AV_CODEC_ID_H264);
-	
 	_Check_return_ virtual bool EncodeFrame(std::shared_ptr<SharedAVFrame> input) final;
 
 	_Check_return_ virtual bool SendPacket(std::shared_ptr<SharedAVPacket>& packet) final;
@@ -41,14 +39,12 @@ public:
 	virtual ~FrameEncoder();
 
 protected:
-	virtual void PrintLog(std::string log) final;
-
 	static std::ofstream log_stream;
 
 	const AVCodec* enc_codec;
 	AVCodecContext* enc_context;
 
-	int frame_rate;
+	virtual void PrintLog(std::string log) final;
 
 private:
 	_Check_return_ bool FillPacketBuf();

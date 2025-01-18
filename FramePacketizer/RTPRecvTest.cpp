@@ -85,7 +85,7 @@ private:
 	AVCodecContext** dec_codec_context;
 	WinScreenPrinter s_printer;
 	shared_ptr<VideoFrameData> yuv_frame_data;
-	PixFmtConverter cnv;
+	ImgFmtConverter cnv;
 	shared_ptr<VideoFrameData> frame_ref;
 };
 

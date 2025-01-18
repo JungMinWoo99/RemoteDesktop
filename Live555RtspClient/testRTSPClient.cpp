@@ -68,7 +68,7 @@ public:
 private:
 	WinScreenPrinter s_printer;
 	std::shared_ptr<VideoFrameData> yuv_frame_data;
-	PixFmtConverter cnv;
+	ImgFmtConverter cnv;
 	std::shared_ptr<VideoFrameData> frame_ref;
 };
 

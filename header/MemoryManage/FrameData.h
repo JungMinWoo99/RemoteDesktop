@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ResourceMonitor/CountableResource.h"
+#include "MemoryManage/CountableResource.h"
 
 #include <Windows.h>
 #include <chrono>

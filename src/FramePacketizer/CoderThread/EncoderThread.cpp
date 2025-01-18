@@ -33,7 +33,7 @@ void AVPacketHandlerThread::HandlerFunc()
 	while (is_processing)
 	{	
 		if (encoder.SendPacketBlocking(recv_packet))
-			proc_obj.PacketProcess(recv_packet.get()->getPointer());
+			proc_obj.PacketProcess(recv_packet);
 	}
 }
 

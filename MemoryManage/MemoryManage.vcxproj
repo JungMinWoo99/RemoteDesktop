@@ -19,13 +19,13 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Utility</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
@@ -79,6 +79,7 @@
     <ClCompile Include="..\src\MemoryManage\AVFrameManage.cpp" />
     <ClCompile Include="..\src\MemoryManage\AVPacketManage.cpp" />
     <ClCompile Include="..\src\MemoryManage\AVStructPool.cpp" />
+    <ClCompile Include="..\src\MemoryManage\CountableResource.cpp" />
     <ClCompile Include="..\src\MemoryManage\FrameData.cpp" />
     <ClCompile Include="..\src\MemoryManage\PacketData.cpp" />
     <ClCompile Include="..\src\MemoryManage\PixFmtConverter.cpp" />
@@ -87,6 +88,7 @@
     <ClInclude Include="..\header\MemoryManage\AVFrameManage.h" />
     <ClInclude Include="..\header\MemoryManage\AVPacketManage.h" />
     <ClInclude Include="..\header\MemoryManage\AVStructPool.h" />
+    <ClInclude Include="..\header\MemoryManage\CountableResource.h" />
     <ClInclude Include="..\header\MemoryManage\FrameData.h" />
     <ClInclude Include="..\header\MemoryManage\PacketData.h" />
     <ClInclude Include="..\header\MemoryManage\PixFmtConverter.h" />

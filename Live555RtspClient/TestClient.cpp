@@ -3,7 +3,7 @@
 #include "MultiThreadFrameGetter/PeriodicDataCollector.h"
 #include "MemoryManage/PixFmtConverter.h"
 #include "FramePacketizer/FrameDecoder.h"
-#include "FramePacketizer/AVFrameManage.h"
+#include "MemoryManage/AVFrameManage.h"
 #include "FramePacketizer/CoderThread/DecoderThread.h"
 #include "ScreenPrinter/WinScreenPrinter.h"
 #include "ScreenCapture/WinScreenCapture.h"
@@ -40,7 +40,7 @@ public:
 private:
 	WinScreenPrinter s_printer;
 	shared_ptr<VideoFrameData> yuv_frame_data;
-	PixFmtConverter cnv;
+	ImgFmtConverter cnv;
 	shared_ptr<VideoFrameData> frame_ref;
 };
 

@@ -58,7 +58,7 @@ public:
     }
     void FrameProcess(SharedAVFrame frame) override
     {
-        auto avfrm = frame.get()->getPointer();
+        auto avfrm = frame.getPointer();
         std::this_thread::sleep_for(std::chrono::microseconds(1000000 / DEFALUT_FRAME_RATE));
         CopyAVFrameToRaw(avfrm, yuv_frame_data);
         frame_ref = cnv.ConvertYUVToBGR(yuv_frame_data);
@@ -67,7 +67,7 @@ private:
     AVFormatContext** formatContext;
     WinScreenPrinter s_printer;
     shared_ptr<VideoFrameData> yuv_frame_data;
-    PixFmtConverter cnv;
+    ImgFmtConverter cnv;
     shared_ptr<VideoFrameData> frame_ref;
 
 };

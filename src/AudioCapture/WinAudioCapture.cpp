@@ -16,6 +16,7 @@
                 { (punk)->Release(); (punk) = NULL; }
 
 using namespace std;
+
 WinAudioCapture::WinAudioCapture()
 	:raw_data_que("AudioRawDataBuffer"), continue_capture(false)
 {
@@ -112,7 +113,7 @@ void WinAudioCapture::StartCapture()
 	cap_thread = thread(&WinAudioCapture::CaptureFunc, this);
 }
 
-MutexQueue<std::shared_ptr<AudioFrameData>>& WinAudioCapture::getDataBuffer()
+MutexQueue<shared_ptr<AudioFrameData>>& WinAudioCapture::getDataBuffer()
 {
 	return raw_data_que;
 }

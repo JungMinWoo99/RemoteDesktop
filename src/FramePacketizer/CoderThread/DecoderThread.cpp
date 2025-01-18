@@ -7,14 +7,6 @@ using namespace std;
 AVFrameHandlerThread::AVFrameHandlerThread(FrameDecoder& decoder, AVFrameProcessor& proc_obj) :decoder(decoder), proc_obj(proc_obj)
 {
 	is_processing = false;
-
-	//frame memory size calculate
-	auto c_context = decoder.getDecCodecContext();
-	enum AVPixelFormat pix_fmt = c_context->pix_fmt;
-	int bytes_per_pixel = av_get_bits_per_pixel(av_pix_fmt_desc_get(pix_fmt));
-	int mem_size = c_context->width * c_context->height* bytes_per_pixel;
-
-	recent_frame = make_shared<VideoFrameData>(mem_size);
 }
 
 void AVFrameHandlerThread::StartHandle()
@@ -39,7 +31,7 @@ void AVFrameHandlerThread::HandlerFunc()
 	while (is_processing)
 	{
 		if (decoder.SendFrameBlocking(recv_frame))
-			proc_obj.FrameProcess(recv_frame.get()->getPointer());
+			proc_obj.FrameProcess(recv_frame);
 	}
 }
 

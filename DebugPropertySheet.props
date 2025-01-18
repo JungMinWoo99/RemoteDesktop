@@ -6,14 +6,14 @@
   <ItemDefinitionGroup>
     <ClCompile>
       <ObjectFileName>$(SolutionDir)obj_debug\</ObjectFileName>
-      <AdditionalIncludeDirectories>$(SolutionDir)header\;%_FFMPEG_INCLUDE%;%_OPENSSL_INCLUDE%;%_LIVE555_INCLUDE%;%_PORTAUDIO_INCLUDE%</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)header\;%_FFMPEG_INCLUDE%;%_OPENSSL_INCLUDE%;%_LIVE555_INCLUDE%;%_PORTAUDIO_INCLUDE%;%_BOOST_INCLUDE%</AdditionalIncludeDirectories>
       <SDLCheck>true</SDLCheck>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <PreprocessorDefinitions>_HAS_STD_BYTE=0;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
-      <AdditionalLibraryDirectories>$(SolutionDir)obj_debug;%_FFMPEG_LIB%;%_OPENSSL_LIB%\MD;%_LIVE555_LIB%;%_PORTAUDIO_LIB%;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)x64\Debug;%_FFMPEG_LIB%;%_OPENSSL_LIB%\MD;%_LIVE555_LIB%;%_PORTAUDIO_LIB%;%_BOOST_LIB%;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>avcodec.lib;avformat.lib;avutil.lib;swscale.lib;swresample.lib;GDI32.lib;user32.lib;d3d11.lib;gdiplus.lib;dxgi.lib;ws2_32.lib;libBasicUsageEnvironment_d.lib;libgroupsock_d.lib;libliveMedia_d.lib;libUsageEnvironment_d.lib;portaudio_x64.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

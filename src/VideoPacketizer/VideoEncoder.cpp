@@ -1,13 +1,14 @@
 #include "VideoPacketizer/VideoEncoder.h"
 
+#define BIT_RATE 5000
 using namespace std;
 
-VideoEncoder::VideoEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
-	:FrameEncoder("VideoEncoder")
+VideoEncoder::VideoEncoder(int w, int h, int frame_rate, AVCodecID codec_id)
+	:FrameEncoder("VideoEncoder"),w(w),h(h), frame_rate(frame_rate), codec_id(codec_id)
 {
 	int ret;
 
-	enc_codec = avcodec_find_encoder(coedec_id);
+	enc_codec = avcodec_find_encoder(codec_id);
 	if (enc_codec == NULL)
 	{
 		PrintLog("find_encoder fail");
@@ -27,7 +28,7 @@ VideoEncoder::VideoEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 	enc_context->framerate = { frame_rate, 1 };
 	enc_context->gop_size = GOP_SIZE;
 	enc_context->pix_fmt = DEFALUT_PIX_FMT;
-	enc_context->bit_rate = RECOMMAND_BIT_RATE;
+	enc_context->bit_rate = BIT_RATE;
 	enc_context->max_b_frames = 1; // no b frame
 	enc_context->codec_type = AVMEDIA_TYPE_VIDEO;
 	enc_context->flags |= AV_CODEC_FLAG_QSCALE;
@@ -59,6 +60,7 @@ VideoEncoder::VideoEncoder(int w, int h, int frame_rate, AVCodecID coedec_id)
 		else
 			PrintLog("av_opt_set fail");
 	}
+
 	error_code = av_opt_set(enc_context->priv_data, "crf", "23", 0);
 	if (error_code < 0)
 	{

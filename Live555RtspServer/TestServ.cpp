@@ -2,8 +2,8 @@
 #include "MultiThreadFrameGetter/CaptureThread.h"
 #include "MultiThreadFrameGetter/PeriodicDataCollector.h"
 #include "MemoryManage/PixFmtConverter.h"
-#include "FramePacketizer/FrameEncoder.h"
-#include "FramePacketizer/AVFrameManage.h"
+#include "VideoPacketizer/VideoEncoder.h"
+#include "MemoryManage/AVFrameManage.h"
 #include "FramePacketizer/CoderThread/EncoderThread.h"
 #include "TestQueueMonitorThread.h"
 #include "ScreenCapture/DirectXScreenCapture.h"
@@ -32,8 +32,8 @@ int main(void)
 	ScreenDataBuffer periodic_buf(10, "Screen Frame Collect Buffer");
 	CaptureThread capture_obj(screen_buf, cap_obj);
 	PeriodicDataCollector clt_obj(screen_buf, periodic_buf);
-	FrameEncoder encoding_obj;
-	PixFmtConverter pix_fmt_cvt;
+	VideoEncoder encoding_obj;
+	ImgFmtConverter pix_fmt_cvt;
 
 	//video stream open
 	EncodedPacketFramedSource::FramedSourcePacketHandler& prc_obj = rtsp_serv.GetPacketHandler();
